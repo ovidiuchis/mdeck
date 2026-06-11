@@ -1,5 +1,9 @@
 {
-  "presentations": [
-    "demo"
+  "collections": [
+    {
+      "title": "Demo",
+      "description": "Prezentări de exemplu incluse în motor.",
+      "presentations": ["demo"]
+    }
   ]
 }

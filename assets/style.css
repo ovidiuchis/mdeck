@@ -276,6 +276,47 @@ header.site {
 
 .deck-card:hover .go { transform: translateX(3px); }
 
+/* ---------- colecții ---------- */
+.collections { padding: 44px 0 90px; }
+
+.collection + .collection { margin-top: 64px; }
+
+.collection-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.collection-title::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: var(--gold);
+}
+
+.collection-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line-mid);
+}
+
+.collection-desc {
+  margin-top: 10px;
+  max-width: 580px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.collection .decks { padding: 24px 0 0; }
+
 /* accente — nume vechi, paleta proprie */
 [data-accent="teal"]    { --a: var(--azure); }
 [data-accent="indigo"]  { --a: var(--ultra); }

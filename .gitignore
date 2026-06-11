@@ -13,7 +13,7 @@ node_modules/
 package-lock.json
 
 # Setări locale Claude Code
-.claude/settings.local.json
+.claude
 
 # Diverse temporare
 *.log

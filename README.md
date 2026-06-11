@@ -20,7 +20,7 @@ mdeck/
 │   ├── md.js                   # adaptor Markdown (frontmatter + containere :::)
 │   └── vendor/                 # markdown-it, highlight.js (locale)
 └── presentations/
-    ├── index.json              # lista directoarelor cu prezentări
+    ├── index.json              # lista / colecțiile de prezentări
     └── demo/                   # exemplu — poate fi șters sau înlocuit
 ```
 
@@ -91,9 +91,33 @@ Alternative la CDN: includerea acestui repo ca **git submodule** (referințe rel
 ```
 
 3. Scrie slide-urile ca fișiere `.md` (vezi sintaxa mai jos).
-4. Adaugă numele directorului în `presentations/index.json`.
+4. Adaugă numele directorului în `presentations/index.json` — fie în lista plată `presentations`, fie într-o colecție (vezi mai jos).
 
 Gata — apare automat pe pagina de start.
+
+## Colecții
+
+Prezentările pot fi grupate pe pagina de start în **colecții** (de ex. „Internship 2026", „ASiS generale"). În `presentations/index.json`:
+
+```json
+{
+  "collections": [
+    {
+      "title": "Internship 2026",
+      "description": "Materialele programului de internship.",
+      "presentations": ["intro-git", "intro-sql"]
+    },
+    {
+      "title": "ASiS generale",
+      "presentations": ["asis-onboarding"]
+    }
+  ]
+}
+```
+
+- `title` — numele colecției, afișat ca antet de secțiune; `description` e opțională.
+- Ordinea colecțiilor și a prezentărilor din listă este ordinea de afișare.
+- Formatul vechi rămâne valabil: un simplu `{ "presentations": ["demo"] }` afișează toate cardurile într-o singură grilă, fără antete. Cele două se pot și combina — prezentările din lista plată `presentations` apar la final, fără titlu de colecție.
 
 ## Sintaxa unui slide
 

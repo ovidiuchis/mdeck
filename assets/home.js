@@ -51,20 +51,23 @@
       return;
     }
 
-    const cards = await Promise.all(
-      list.presentations.map(async (id) => {
+    /* normalizare: formatul vechi (listă plată) devine o colecție fără titlu */
+    const collections = Array.isArray(list.collections) ? list.collections.slice() : [];
+    if (Array.isArray(list.presentations) && list.presentations.length)
+      collections.push({ presentations: list.presentations });
+
+    /* metadatele tuturor prezentărilor, încărcate o singură dată */
+    const ids = [...new Set(collections.flatMap((c) => c.presentations || []))];
+    const metas = {};
+    await Promise.all(
+      ids.map(async (id) => {
         try {
-          const meta = await (await fetch(CFG.root + id + "/presentation.json")).json();
-          return { id, meta };
-        } catch (e) {
-          return null;
-        }
+          metas[id] = await (await fetch(CFG.root + id + "/presentation.json")).json();
+        } catch (e) {}
       })
     );
 
-    for (const item of cards) {
-      if (!item) continue;
-      const { id, meta } = item;
+    function card(id, meta) {
       const a = document.createElement("a");
       a.className = "deck-card";
       a.href = CFG.deck + "?p=" + encodeURIComponent(id);
@@ -76,7 +79,32 @@
         '<div class="foot"><div class="tags">' +
         (meta.tags || []).map((t) => '<span class="tag">' + t + "</span>").join("") +
         '</div><span class="go">Deschide &rarr;</span></div>';
-      root.appendChild(a);
+      return a;
+    }
+
+    const grouped = collections.some((c) => c.title);
+    if (grouped) {
+      root.classList.remove("decks");
+      root.classList.add("collections");
+    }
+
+    for (const col of collections) {
+      const items = (col.presentations || []).filter((id) => metas[id]);
+      if (!items.length) continue;
+
+      let grid = root;
+      if (grouped) {
+        const sec = document.createElement("section");
+        sec.className = "collection";
+        sec.innerHTML =
+          (col.title ? '<h2 class="collection-title">' + col.title + "</h2>" : "") +
+          (col.description ? '<p class="collection-desc">' + col.description + "</p>" : "");
+        grid = document.createElement("div");
+        grid.className = "decks";
+        sec.appendChild(grid);
+        root.appendChild(sec);
+      }
+      for (const id of items) grid.appendChild(card(id, metas[id]));
     }
   })();
 })();
