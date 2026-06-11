@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MDECK — prezentări din Markdown</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+  <script>
+    try {
+      const t = new URLSearchParams(location.search).get("theme") || localStorage.getItem("mdeck-theme");
+      if (t === "dark") document.documentElement.classList.add("dark");
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <div class="ambient"></div>
+
+  <div class="wrap">
+    <header class="site">
+      <a class="brand" href="index.html"><span class="monogram">MD</span> MDECK</a>
+      <span style="display:flex;align-items:center;gap:16px">
+        <span class="hint">slide deck-uri din Markdown</span>
+        <button class="theme-btn" id="btn-theme" title="Temă închisă/deschisă (D)">&#9681;</button>
+      </span>
+    </header>
+
+    <section class="hero">
+      <div class="kicker">Biblioteca de prezentări</div>
+      <h1>Prezentări care <span class="hl">arată bine</span>,<br>scrise în Markdown.</h1>
+      <p>Fiecare prezentare e un director cu fișiere <code style="font-family:var(--mono);color:var(--ultra);font-weight:700">.md</code> — câte unul per slide. Alege una de mai jos sau adaugă alta nouă în <code style="font-family:var(--mono);color:var(--ultra);font-weight:700">presentations/</code>.</p>
+    </section>
+
+    <main id="decks" class="decks"></main>
+
+    <footer class="site">
+      MDECK &middot; Navigare în prezentare: &larr; &rarr; / Space &middot; <b>F</b> ecran complet &middot; <b>G</b> vedere de ansamblu &middot; <b>H</b> înapoi la prezentări &middot; <b>D</b> temă închisă
+    </footer>
+  </div>
+
+  <script src="assets/home.js"></script>
+</body>
+</html>

@@ -1,0 +1,343 @@
+/* ============================================================
+   Identitatea vizuală „Ovidiu Chiș” — varianta profesională
+   Ultramarin & aur pe alb-os, structură fermă (borduri de
+   cerneală, umbre dure mici), fără gradiente și fără zgomot.
+   ============================================================ */
+
+:root {
+  /* fundaluri */
+  --bone: #f5f2e9;        /* alb-os cald — fundalul de bază */
+  --paper: #fffefa;       /* alb hârtie — carduri, suprafețe */
+
+  /* cerneală */
+  --ink: #191922;         /* negru-cerneală — text, borduri */
+  --ink-soft: #45454e;    /* text secundar */
+  --muted: #8a877e;       /* text estompat */
+
+  /* semnătura cromatică */
+  --ultra: #2033c4;       /* ultramarin Klein — culoarea principală */
+  --ultra-deep: #16227e;  /* ultramarin de noapte */
+  --gold: #eab438;        /* auriu cald — accent, folosit cu măsură */
+  --azure: #2d8fc4;
+  --coral: #d6452f;
+  --green: #2a8a5e;
+  --plum: #6a44b8;
+  --sky: #6db5dd;
+
+  /* derivate de temă */
+  --shadow-c: var(--ink);              /* culoarea umbrelor dure */
+  --dot: rgba(25, 25, 34, 0.045);      /* punctele texturii de fundal */
+  --line-soft: rgba(25, 25, 34, 0.16); /* linii fine (rânduri tabel) */
+  --line-mid: rgba(25, 25, 34, 0.32);  /* linii medii (separatoare, taguri) */
+  --code-bg: #191922;                  /* fundalul blocurilor de cod, fix în ambele teme */
+  --title-bg: var(--ultra);            /* fundalul slide-urilor de titlu/secțiune */
+
+  --border: 2px solid var(--ink);
+  --shadow: 5px 5px 0 var(--shadow-c);
+  --shadow-sm: 3px 3px 0 var(--shadow-c);
+
+  --sans: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --display: "Archivo", "Space Grotesk", sans-serif;
+  --mono: "IBM Plex Mono", "Cascadia Code", Consolas, monospace;
+
+  --r: 4px;               /* colțuri abia rotunjite */
+}
+
+/* ---------- tema închisă (tasta D în prezentare) ---------- */
+html.dark {
+  --bone: #14141c;
+  --paper: #1d1d27;
+  --ink: #ece8db;
+  --ink-soft: #b6b2a6;
+  --muted: #84817a;
+
+  --shadow-c: rgba(0, 0, 0, 0.55);
+  --dot: rgba(236, 232, 219, 0.04);
+  --line-soft: rgba(236, 232, 219, 0.12);
+  --line-mid: rgba(236, 232, 219, 0.28);
+  --title-bg: var(--ultra-deep);
+
+  /* accente luminate, ca să rămână lizibile pe fundal închis */
+  --ultra: #5e6ce0;
+  --azure: #4fb2e6;
+  --coral: #f06a52;
+  --green: #3cba7a;
+  --plum: #976ee8;
+  --sky: #7ec9ec;
+  --gold: #f0bb4a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--bone);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--gold); color: #191922; }
+
+/* ---------- fundal: hârtie cu puncte foarte fine ---------- */
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle, var(--dot) 1px, transparent 1.4px) 0 0 / 26px 26px,
+    var(--bone);
+}
+
+/* ---------- layout pagină ---------- */
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+header.site {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30px 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.brand .monogram {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  background: var(--ultra);
+  color: var(--bone);
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0;
+}
+
+.hint {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+
+/* ---------- hero ---------- */
+.hero { padding: 64px 0 24px; }
+
+.hero .kicker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ultra);
+  margin-bottom: 24px;
+}
+
+.hero .kicker::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: var(--ultra);
+}
+
+.hero h1 {
+  font-family: var(--display);
+  font-size: clamp(42px, 6vw, 70px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+/* subliniere tip marker — auriul folosit chirurgical */
+.hero h1 .hl {
+  background: linear-gradient(transparent 64%, var(--gold) 64%);
+  padding: 0 4px;
+}
+
+.hero p {
+  margin-top: 24px;
+  max-width: 580px;
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+/* ---------- grid prezentări ---------- */
+.decks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 28px;
+  padding: 44px 0 90px;
+}
+
+.deck-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 28px 28px 24px;
+  background: var(--paper);
+  border: var(--border);
+  border-top: 4px solid var(--a, var(--ultra));
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  text-decoration: none;
+  color: var(--ink);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.deck-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--ink);
+}
+
+.deck-card:active {
+  transform: translate(1px, 1px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.deck-card .meta {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--a, var(--ultra));
+}
+
+.deck-card h2 {
+  font-family: var(--display);
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.deck-card p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  flex: 1;
+}
+
+.deck-card .foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line-mid);
+}
+
+.deck-card .tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.deck-card .tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  padding: 3px 10px;
+  border: 1px solid var(--line-mid);
+  background: var(--bone);
+}
+
+.deck-card .go {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ultra);
+  white-space: nowrap;
+  transition: transform 0.15s ease;
+}
+
+.deck-card:hover .go { transform: translateX(3px); }
+
+/* accente — nume vechi, paleta proprie */
+[data-accent="teal"]    { --a: var(--azure); }
+[data-accent="indigo"]  { --a: var(--ultra); }
+[data-accent="violet"]  { --a: var(--plum); }
+[data-accent="amber"]   { --a: var(--gold); }
+[data-accent="rose"]    { --a: var(--coral); }
+[data-accent="emerald"] { --a: var(--green); }
+[data-accent="sky"]     { --a: var(--sky); }
+
+/* ---------- panou eroare ---------- */
+.error-panel {
+  margin: 60px auto;
+  max-width: 640px;
+  padding: 36px 40px;
+  background: var(--paper);
+  border: var(--border);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+}
+
+.error-panel h2 {
+  font-family: var(--display);
+  font-size: 21px;
+  font-weight: 800;
+  margin-bottom: 14px;
+  color: var(--coral);
+}
+.error-panel p { color: var(--ink-soft); line-height: 1.7; margin-bottom: 10px; }
+
+.error-panel code {
+  display: block;
+  margin: 14px 0;
+  padding: 14px 18px;
+  background: var(--code-bg);
+  color: var(--gold);
+  border-radius: var(--r);
+  font-family: var(--mono);
+  font-size: 14px;
+}
+
+footer.site {
+  padding: 28px 0 50px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  border-top: 1px solid var(--line-mid);
+}
+
+/* ---------- buton temă (pagina de start) ---------- */
+.theme-btn {
+  appearance: none;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  background: var(--paper);
+  color: var(--ink);
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.theme-btn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--shadow-c); }

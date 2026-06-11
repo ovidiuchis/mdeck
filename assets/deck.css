@@ -1,0 +1,657 @@
+/* ============================================================
+   Viewer de slide-uri — identitatea „Ovidiu Chiș”, varianta
+   profesională. Conținut pe alb-os; titlu/secțiune pe
+   ultramarin plin. Proiectate la 1280×720, scalate la viewport.
+   ============================================================ */
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--code-bg); /* cadru constant, indiferent de temă */
+}
+
+/* ---------- scenă ---------- */
+#stage-wrap {
+  position: fixed;
+  inset: 0;
+}
+
+#stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1280px;
+  height: 720px;
+  margin-left: -640px;
+  margin-top: -360px;
+  transform-origin: center center;
+}
+
+/* ---------- slide ---------- */
+.slide {
+  position: absolute;
+  inset: 0;
+  padding: 64px 84px 76px;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(circle, var(--dot) 1px, transparent 1.4px) 0 0 / 26px 26px,
+    var(--bone);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(18px);
+  transition: opacity 0.25s ease-out,
+              transform 0.25s ease-out,
+              visibility 0s linear 0.25s;
+}
+
+/* copiii nu se comprimă: conținutul prea lung depășește vizibil
+   slide-ul în loc să fie tăiat pe tăcute */
+.slide > * { flex-shrink: 0; }
+
+.slide.current {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+  transition: opacity 0.25s ease-out,
+              transform 0.25s ease-out;
+}
+
+/* ---------- tipografie în slide ---------- */
+
+/* eyebrow / etichetă mică (h6 în Markdown) */
+.slide h6 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 22px;
+}
+
+.slide h6::before {
+  content: "";
+  width: 11px;
+  height: 11px;
+  background: var(--a, var(--ultra));
+}
+
+.slide h1 {
+  font-family: var(--display);
+  font-size: 60px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+}
+
+.slide h2 {
+  font-family: var(--display);
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  line-height: 1.12;
+  margin-bottom: 10px;
+}
+
+.slide h2::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 6px;
+  margin-top: 16px;
+  background: var(--a, var(--ultra));
+}
+
+.slide h3 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  margin-bottom: 8px;
+}
+
+.slide p {
+  font-size: 21px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin: 12px 0;
+  max-width: 980px;
+}
+
+.slide strong { color: var(--ink); font-weight: 700; }
+.slide em     { color: var(--ink); }
+
+.slide a {
+  color: var(--ultra);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 2px solid var(--gold);
+}
+
+.slide ul, .slide ol {
+  margin: 14px 0 14px 4px;
+  padding-left: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.slide li {
+  font-size: 20px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.slide ul { list-style: none; padding-left: 6px; }
+
+.slide ul > li {
+  position: relative;
+  padding-left: 28px;
+}
+
+.slide ul > li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 9px;
+  height: 9px;
+  background: var(--a, var(--ultra));
+}
+
+.slide ol li::marker {
+  color: var(--a, var(--ultra));
+  font-family: var(--mono);
+  font-weight: 600;
+}
+
+.slide ul ul, .slide ol ol, .slide ul ol, .slide ol ul {
+  margin: 8px 0 0 2px;
+  gap: 7px;
+}
+
+.slide ul ul li { font-size: 18px; }
+.slide ul ul > li::before {
+  width: 7px;
+  height: 7px;
+  background: transparent;
+  border: 2px solid var(--a, var(--ultra));
+}
+
+.slide blockquote {
+  margin: 20px 0;
+  padding: 18px 26px;
+  background: var(--paper);
+  border: 1px solid var(--line-mid);
+  border-left: 6px solid var(--a, var(--ultra));
+  box-shadow: var(--shadow-sm);
+}
+
+.slide blockquote p {
+  font-size: 22px;
+  font-style: italic;
+  color: var(--ink);
+  margin: 0;
+}
+
+.slide hr {
+  border: none;
+  border-top: 2px solid var(--ink);
+  margin: 22px 0;
+}
+
+.slide img {
+  max-width: 100%;
+  border: var(--border);
+  box-shadow: var(--shadow);
+}
+
+/* ---------- cod ---------- */
+.slide code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: rgba(32, 51, 196, 0.07);
+  border: 1px solid rgba(32, 51, 196, 0.35);
+  padding: 1px 7px;
+  color: var(--ultra-deep);
+  font-weight: 500;
+}
+
+html.dark .slide code {
+  background: rgba(110, 124, 255, 0.13);
+  border-color: rgba(110, 124, 255, 0.4);
+  color: #a8b2ff;
+}
+
+.slide pre {
+  margin: 18px 0;
+  padding: 20px 24px;
+  background: var(--code-bg);
+  border: var(--border);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.slide pre code {
+  display: block;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: #eeeadf;
+  font-weight: 400;
+  font-variant-ligatures: none;
+}
+
+/* token-uri highlight.js, în paleta proprie */
+.hljs-keyword, .hljs-selector-tag, .hljs-built_in,
+.hljs-section, .hljs-name            { color: #f0bf58; font-weight: 600; }
+.hljs-string, .hljs-attr,
+.hljs-template-tag                   { color: #8fd6a8; }
+.hljs-number, .hljs-literal,
+.hljs-symbol                         { color: #eb9580; }
+.hljs-comment, .hljs-quote,
+.hljs-meta                           { color: #84879a; font-style: italic; }
+.hljs-title, .hljs-function,
+.hljs-type, .hljs-variable           { color: #86c8f0; }
+.hljs-operator, .hljs-punctuation    { color: #c9c4b4; }
+
+/* ---------- tabele ---------- */
+.slide table {
+  width: 100%;
+  margin: 18px 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--paper);
+  border: var(--border);
+  box-shadow: var(--shadow);
+  font-size: 19px;
+}
+
+.slide th {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--bone);
+  background: var(--ultra-deep);
+  padding: 11px 20px;
+}
+
+.slide td {
+  padding: 10px 20px;
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.slide tr:last-child td { border-bottom: none; }
+.slide td code { font-size: 16px; }
+
+/* ---------- containere ::: ---------- */
+.slide .grid {
+  display: grid;
+  gap: 22px;
+  margin: 22px 0;
+  align-items: stretch;
+}
+
+.slide .g2 { grid-template-columns: repeat(2, 1fr); }
+.slide .g3 { grid-template-columns: repeat(3, 1fr); }
+.slide .g4 { grid-template-columns: repeat(4, 1fr); }
+
+.slide .card {
+  padding: 20px 22px;
+  background: var(--paper);
+  border: var(--border);
+  border-top: 4px solid var(--a, var(--ultra));
+  border-radius: var(--r);
+  box-shadow: var(--shadow-sm);
+}
+
+.slide .card h3 {
+  font-size: 20px;
+  color: var(--ink);
+}
+
+.slide .card p, .slide .card li { font-size: 17.5px; line-height: 1.55; }
+.slide .card p { margin: 8px 0 0; }
+.slide .card ul, .slide .card ol { margin: 10px 0 0; gap: 7px; }
+.slide .card ul > li { padding-left: 22px; }
+.slide .card ul > li::before { width: 8px; height: 8px; top: 0.5em; }
+
+/* statistici mari */
+.slide .stat {
+  padding: 22px 24px;
+  background: var(--paper);
+  border: var(--border);
+  border-top: 4px solid var(--a, var(--ultra));
+  border-radius: var(--r);
+  box-shadow: var(--shadow-sm);
+}
+
+.slide .stat h2 {
+  font-family: var(--display);
+  font-size: 52px;
+  font-weight: 800;
+  margin: 0;
+  color: var(--a, var(--ultra));
+}
+
+.slide .stat h2::after { display: none; }
+
+.slide .stat p {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 10px 0 0;
+}
+
+/* ---------- layout-uri ---------- */
+
+/* slide de titlu și de secțiune — ultramarin plin */
+.layout-title, .layout-section {
+  justify-content: center;
+  align-items: flex-start;
+  background: var(--title-bg);
+}
+
+.layout-title h6, .layout-section h6 {
+  color: rgba(245, 242, 233, 0.8);
+}
+
+.layout-title h6::before, .layout-section h6::before {
+  background: var(--gold);
+}
+
+.layout-title h1 {
+  font-size: 80px;
+  max-width: 1060px;
+  color: var(--bone);
+}
+
+.layout-title > p:first-of-type {
+  font-size: 25px;
+  color: rgba(245, 242, 233, 0.85);
+  margin-top: 26px;
+  max-width: 840px;
+}
+
+.layout-title p, .layout-section p { color: rgba(245, 242, 233, 0.85); }
+.layout-title strong, .layout-section strong { color: var(--gold); }
+
+/* slide de secțiune */
+.layout-section h1 {
+  font-size: 66px;
+  max-width: 1000px;
+  color: var(--bone);
+}
+
+.layout-section h1::before {
+  content: "";
+  display: block;
+  width: 96px;
+  height: 8px;
+  margin-bottom: 32px;
+  background: var(--gold);
+}
+
+.layout-section p { font-size: 23px; margin-top: 22px; }
+
+/* conținut centrat */
+.layout-center {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.layout-center h1 { font-size: 60px; max-width: 1000px; }
+.layout-center h2 { max-width: 1000px; }
+.layout-center h6 { align-self: center; }
+.layout-center h2::after { margin-left: auto; margin-right: auto; }
+.layout-center p { margin-left: auto; margin-right: auto; }
+.layout-center ul, .layout-center ol { text-align: left; }
+.layout-center .grid { width: 100%; }
+
+/* ---------- semnătura (doar pe titlu și final) ---------- */
+.sign {
+  position: absolute;
+  left: 84px;
+  bottom: 52px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+}
+
+.sign .monogram {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  background: var(--ultra);
+  color: var(--bone);
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.layout-title .sign, .layout-section .sign { color: rgba(245, 242, 233, 0.9); }
+.layout-title .sign .monogram, .layout-section .sign .monogram {
+  background: var(--gold);
+  color: var(--ink);
+  box-shadow: 3px 3px 0 var(--ultra-deep);
+}
+
+/* ---------- chrome (în afara scenei, fix pe viewport) ---------- */
+#progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 4px;
+  width: 0;
+  z-index: 50;
+  background: var(--gold);
+  transition: width 0.3s ease-out;
+}
+
+#hud {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 22px;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+body.hud-visible #hud { opacity: 1; }
+
+#hud .chip {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  background: var(--paper);
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: 8px 16px;
+}
+
+#hud .chip .dot {
+  width: 9px;
+  height: 9px;
+  background: var(--ultra);
+}
+
+#hud .controls {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--paper);
+  border: var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: 5px 8px;
+}
+
+#hud .controls button {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 600;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+#hud .controls button:hover {
+  background: var(--ultra);
+  color: var(--bone);
+}
+
+#hud .controls #counter {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--ink-soft);
+  padding: 0 10px;
+  white-space: nowrap;
+}
+
+#hud .controls #counter b { color: var(--ink); font-weight: 700; }
+
+/* ---------- mod ansamblu (overview) ---------- */
+#overview {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: none;
+  overflow-y: auto;
+  padding: 56px;
+  background: rgba(25, 25, 34, 0.9);
+}
+
+body.overview #overview { display: block; }
+body.overview #stage-wrap { visibility: hidden; }
+
+#overview .ov-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 28px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+#overview .thumb {
+  position: relative;
+  cursor: pointer;
+  border: var(--border);
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: var(--bone);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+#overview .thumb:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.55);
+}
+
+#overview .thumb.active { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+#overview .thumb .mini {
+  position: absolute;
+  top: 0; left: 0;
+  width: 1280px;
+  height: 720px;
+  transform-origin: top left;
+  pointer-events: none;
+}
+
+#overview .thumb .mini .slide {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: none;
+}
+
+#overview .thumb .num {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--bone);
+  background: var(--ink);
+  padding: 3px 10px;
+}
+
+/* ---------- ecran de eroare ---------- */
+#deck-error {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: none;
+  place-items: center;
+  background: var(--bone);
+  padding: 32px;
+}
+
+#deck-error.visible { display: grid; }
+
+#deck-error a { color: var(--ultra); font-weight: 600; }
+
+/* ---------- print ---------- */
+@media print {
+  html, body { overflow: visible; background: #fff; }
+  #progress, #hud, #overview { display: none !important; }
+  #stage-wrap { position: static; }
+  #stage {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    transform: none !important;
+  }
+  .slide {
+    position: relative;
+    inset: auto;
+    width: 1280px;
+    height: 720px;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    page-break-after: always;
+  }
+}

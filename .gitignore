@@ -1,0 +1,21 @@
+# Sistem de operare
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Editoare / IDE-uri
+.vscode/
+.idea/
+*.swp
+
+# Node (dacă apar vreodată unelte locale)
+node_modules/
+package-lock.json
+
+# Setări locale Claude Code
+.claude/settings.local.json
+
+# Diverse temporare
+*.log
+*.tmp
+~$*
