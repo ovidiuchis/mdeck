@@ -1,12 +1,12 @@
 {
   "title": "MDECK — demo",
-  "description": "Prezentare demonstrativă: sintaxa slide-urilor, layout-urile și containerele MDECK.",
+  "description": "Demo presentation: slide syntax, layouts and MDECK containers.",
   "accent": "indigo",
   "tags": ["Demo", "Markdown"],
   "slides": [
-    "01-titlu.md",
-    "02-sintaxa.md",
-    "03-containere.md",
+    "01-title.md",
+    "02-syntax.md",
+    "03-containers.md",
     "04-final.md"
   ]
 }

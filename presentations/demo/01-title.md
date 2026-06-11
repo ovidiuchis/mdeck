@@ -5,6 +5,6 @@ accent: indigo
 
 ###### MDECK
 
-# Prezentări din Markdown
+# Slide decks from Markdown
 
-Un director = o prezentare. Un fișier `.md` = un slide. Fără build, fără dependențe externe — doar HTML, CSS și JavaScript.
+One folder = one presentation. One `.md` file = one slide. No build step, no external dependencies — just HTML, CSS and JavaScript.

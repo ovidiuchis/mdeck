@@ -3,8 +3,8 @@ layout: section
 accent: indigo
 ---
 
-###### Pasul următor
+###### Next step
 
-## Adaugă prezentarea ta
+## Add your own presentation
 
-Creează un director în `presentations/`, scrie slide-urile `.md`, listează-le în `presentation.json` și adaugă directorul în `presentations/index.json`. Detalii în README.
+Create a folder in `presentations/`, write the `.md` slides, list them in `presentation.json` and add the folder to `presentations/index.json`. Details in the README.

@@ -1,9 +1,10 @@
 /* ============================================================
-   home.js — pagina de start: listează prezentările
-   Configurare opțională, înainte de includerea scriptului:
+   home.js — home page: lists the presentations
+   Optional configuration, before including the script:
      window.MDECK = {
-       root: "presentations/",   // directorul cu prezentări
-       deck: "deck.html"         // pagina viewer-ului
+       root: "presentations/",   // presentations folder
+       deck: "deck.html",        // viewer page
+       strings: { ... }          // UI text overrides (see STR below)
      }
    ============================================================ */
 
@@ -16,7 +17,23 @@
   );
   if (!CFG.root.endsWith("/")) CFG.root += "/";
 
-  /* ---------- temă închisă / deschisă ---------- */
+  /* UI strings — English defaults, overridable via window.MDECK.strings
+     ({path} is replaced at render time) */
+  const STR = Object.assign(
+    {
+      cardMeta: "Presentation &middot; {n} slides",
+      open: "Open",
+      listErrorTitle: "Couldn't load the presentation list",
+      fileProtocol:
+        "<p>The page was opened directly from a file (file://), so the browser blocks loading data. Start a local server in the project folder:</p>" +
+        "<code>python -m http.server 8080</code>" +
+        "<p>then open <strong>http://localhost:8080</strong>.</p>",
+      checkIndex: "<p>Check that the file <strong>{path}</strong> exists.</p>",
+    },
+    CFG.strings || {}
+  );
+
+  /* ---------- dark / light theme ---------- */
   function toggleTheme() {
     const dark = document.documentElement.classList.toggle("dark");
     try { localStorage.setItem("mdeck-theme", dark ? "dark" : "light"); } catch (e) {}
@@ -27,19 +44,15 @@
     if ((e.key === "d" || e.key === "D") && !e.ctrlKey && !e.metaKey && !e.altKey) toggleTheme();
   });
 
-  /* ---------- lista de prezentări ---------- */
+  /* ---------- presentation list ---------- */
   (async function () {
     const root = document.getElementById("decks");
 
     function fail(isFile) {
       root.innerHTML =
         '<div class="error-panel" style="grid-column:1/-1">' +
-        '<h2>Nu am putut încărca lista de prezentări</h2>' +
-        (isFile
-          ? '<p>Pagina este deschisă direct din fișier (file://), iar browserul blochează încărcarea datelor. Pornește un server local în directorul proiectului:</p>' +
-            '<code>python -m http.server 8080</code>' +
-            '<p>apoi deschide <strong>http://localhost:8080</strong>.</p>'
-          : '<p>Verifică dacă există fișierul <strong>' + CFG.root + 'index.json</strong>.</p>') +
+        "<h2>" + STR.listErrorTitle + "</h2>" +
+        (isFile ? STR.fileProtocol : STR.checkIndex.replace("{path}", CFG.root + "index.json")) +
         "</div>";
     }
 
@@ -51,12 +64,12 @@
       return;
     }
 
-    /* normalizare: formatul vechi (listă plată) devine o colecție fără titlu */
+    /* normalize: the legacy flat list becomes a collection without a title */
     const collections = Array.isArray(list.collections) ? list.collections.slice() : [];
     if (Array.isArray(list.presentations) && list.presentations.length)
       collections.push({ presentations: list.presentations });
 
-    /* metadatele tuturor prezentărilor, încărcate o singură dată */
+    /* fetch every presentation's metadata once */
     const ids = [...new Set(collections.flatMap((c) => c.presentations || []))];
     const metas = {};
     await Promise.all(
@@ -73,12 +86,12 @@
       a.href = CFG.deck + "?p=" + encodeURIComponent(id);
       a.dataset.accent = meta.accent || "teal";
       a.innerHTML =
-        '<div class="meta">Prezentare &middot; ' + meta.slides.length + " slide-uri</div>" +
+        '<div class="meta">' + STR.cardMeta.replace("{n}", meta.slides.length) + "</div>" +
         "<h2>" + meta.title + "</h2>" +
         "<p>" + (meta.description || meta.subtitle || "") + "</p>" +
         '<div class="foot"><div class="tags">' +
         (meta.tags || []).map((t) => '<span class="tag">' + t + "</span>").join("") +
-        '</div><span class="go">Deschide &rarr;</span></div>';
+        '</div><span class="go">' + STR.open + " &rarr;</span></div>";
       return a;
     }
 

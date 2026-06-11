@@ -1,20 +1,20 @@
 ###### Layout
 
-## Grile, carduri și statistici
+## Grids, cards and stats
 
 ::: grid 3
 ::: card teal
 ### Card
-Container colorat cu titlu și conținut — merge și cu liste.
+A colored container with a title and content — lists work too.
 :::
 ::: card amber
-### Accente
+### Accents
 `teal`, `indigo`, `violet`, `amber`, `rose`, `emerald`, `sky`.
 :::
 ::: stat violet
 ## 100%
-Web, fără build
+Web, no build step
 :::
 :::
 
-`grid 2|3|4` creează coloane; fiecare `:::` gol închide containerul curent.
+`grid 2|3|4` creates columns; each empty `:::` closes the current container.

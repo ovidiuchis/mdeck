@@ -70,7 +70,12 @@ In the content repo's `deck.html` and `index.html`, replace the local `assets/..
     root: "presentations/",   // presentations folder (default)
     home: "index.html",       // home page (default)
     author: "Jane Doe",       // signature on the first/last slide (default: none)
-    monogram: "JD"            // signature monogram (default: author's initials)
+    monogram: "JD",           // signature monogram (default: author's initials)
+    strings: {                // UI text overrides (default: English)
+      backToList: "Înapoi la lista de prezentări",
+      open: "Deschide"
+      // see the STR tables in home.js / deck.js for all keys
+    }
   };
 </script>
 <script src="https://cdn.jsdelivr.net/gh/ovidiuchis/mdeck@main/assets/deck.js"></script>

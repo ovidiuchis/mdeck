@@ -1,13 +1,14 @@
 /* ============================================================
-   deck.js — viewer de prezentări
-   Folosire: deck.html?p=<director-prezentare>#<nr-slide>
+   deck.js — presentation viewer
+   Usage: deck.html?p=<presentation-folder>#<slide-number>
 
-   Configurare opțională, înainte de includerea scriptului:
+   Optional configuration, before including the script:
      window.MDECK = {
-       root: "presentations/",   // directorul cu prezentări
-       home: "index.html",       // pagina de start (tasta H, linkuri)
-       author: "Nume Prenume",   // semnătura de pe primul/ultimul slide
-       monogram: "NP"            // monograma semnăturii (implicit: inițialele)
+       root: "presentations/",   // presentations folder
+       home: "index.html",       // home page (H key, links)
+       author: "Jane Doe",       // signature on the first/last slide
+       monogram: "JD",           // signature monogram (default: initials)
+       strings: { ... }          // UI text overrides (see STR below)
      }
    ============================================================ */
 
@@ -20,6 +21,30 @@
   );
   if (!CFG.root.endsWith("/")) CFG.root += "/";
 
+  /* UI strings — English defaults, overridable via window.MDECK.strings
+     ({id}, {path}, {file} are replaced at render time) */
+  const STR = Object.assign(
+    {
+      backToList: "Back to all presentations",
+      titleSuffix: " — Slides",
+      noDeckTitle: "No presentation specified",
+      noDeckBody:
+        "Open this viewer with the <code style='display:inline;padding:2px 8px'>?p=presentation-name</code> parameter, for example:",
+      loadErrorTitle: "Couldn't load the presentation “{id}”",
+      fileProtocolLines: [
+        "The page was opened directly from a file (file://), so the browser blocks loading the slides.",
+        "Start a local server in the project folder:",
+        "$python -m http.server 8080",
+        "then open <strong>http://localhost:8080</strong>.",
+      ],
+      checkFolder:
+        "Check that the folder <strong>{path}</strong> exists and contains a <strong>presentation.json</strong> file.",
+      missingSlideTitle: "Missing slide",
+      missingSlideBody: "Couldn't load the file <strong>{file}</strong> from {path}",
+    },
+    CFG.strings || {}
+  );
+
   const DESIGN_W = 1280, DESIGN_H = 720;
 
   const stage = document.getElementById("stage");
@@ -30,27 +55,27 @@
   const errorBox = document.getElementById("deck-error");
   document.getElementById("chip-home").href = CFG.home;
 
-  let slides = [];     // elementele .slide
+  let slides = [];     // the .slide elements
   let cur = 0;
   let hudTimer = null;
 
-  /* ---------- erori ---------- */
+  /* ---------- errors ---------- */
   function showError(title, lines) {
     errorBox.innerHTML =
       '<div class="error-panel"><h2>' + title + "</h2>" +
       lines.map((l) => (l.startsWith("$") ? "<code>" + l.slice(1) + "</code>" : "<p>" + l + "</p>")).join("") +
-      '<p><a href="' + CFG.home + '" style="color:var(--teal)">&larr; Înapoi la lista de prezentări</a></p></div>';
+      '<p><a href="' + CFG.home + '" style="color:var(--teal)">&larr; ' + STR.backToList + "</a></p></div>";
     errorBox.classList.add("visible");
   }
 
-  /* ---------- scalare scenă ---------- */
+  /* ---------- stage scaling ---------- */
   function fit() {
     const s = Math.min(window.innerWidth / DESIGN_W, window.innerHeight / DESIGN_H) * 0.96;
     stage.style.transform = "scale(" + s + ")";
   }
   window.addEventListener("resize", fit);
 
-  /* ---------- navigare ---------- */
+  /* ---------- navigation ---------- */
   function show(i, instant) {
     if (!slides.length) return;
     cur = Math.max(0, Math.min(i, slides.length - 1));
@@ -63,7 +88,7 @@
   const next = () => show(cur + 1);
   const prev = () => show(cur - 1);
 
-  /* ---------- HUD auto-ascundere ---------- */
+  /* ---------- auto-hiding HUD ---------- */
   function pokeHud() {
     document.body.classList.add("hud-visible");
     clearTimeout(hudTimer);
@@ -71,7 +96,7 @@
   }
   window.addEventListener("mousemove", pokeHud);
 
-  /* ---------- mod ansamblu ---------- */
+  /* ---------- overview mode ---------- */
   function openOverview() {
     const grid = document.createElement("div");
     grid.className = "ov-grid";
@@ -93,7 +118,7 @@
     overview.appendChild(grid);
     document.body.classList.add("overview");
     requestAnimationFrame(() => {
-      // scalează miniaturile la lățimea reală a thumb-ului
+      // scale the miniatures to the thumb's real width
       grid.querySelectorAll(".thumb").forEach((t) => {
         const s = t.clientWidth / DESIGN_W;
         t.querySelector(".mini").style.transform = "scale(" + s + ")";
@@ -114,13 +139,13 @@
     else document.documentElement.requestFullscreen();
   }
 
-  /* ---------- temă închisă / deschisă ---------- */
+  /* ---------- dark / light theme ---------- */
   function toggleTheme() {
     const dark = document.documentElement.classList.toggle("dark");
     try { localStorage.setItem("mdeck-theme", dark ? "dark" : "light"); } catch (e) {}
   }
 
-  /* ---------- tastatură ---------- */
+  /* ---------- keyboard ---------- */
   window.addEventListener("keydown", (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     switch (e.key) {
@@ -138,7 +163,7 @@
     }
   });
 
-  /* ---------- atingere (swipe) ---------- */
+  /* ---------- touch (swipe) ---------- */
   let touchX = null;
   window.addEventListener("touchstart", (e) => { touchX = e.touches[0].clientX; }, { passive: true });
   window.addEventListener("touchend", (e) => {
@@ -148,7 +173,7 @@
     touchX = null;
   }, { passive: true });
 
-  /* ---------- click pe scenă = înainte ---------- */
+  /* ---------- click on stage = forward ---------- */
   document.getElementById("stage-wrap").addEventListener("click", (e) => {
     if (e.target.closest("a, button, pre, code, table")) return;
     if (window.getSelection().toString()) return;
@@ -166,12 +191,12 @@
     if (!isNaN(n) && n - 1 !== cur) show(n - 1, true);
   });
 
-  /* ---------- încărcare ---------- */
+  /* ---------- loading ---------- */
   async function load() {
     const id = new URLSearchParams(location.search).get("p");
     if (!id || /[^\w-]/.test(id)) {
-      showError("Prezentare nespecificată", [
-        "Deschide acest viewer cu parametrul <code style='display:inline;padding:2px 8px'>?p=nume-prezentare</code>, de exemplu:",
+      showError(STR.noDeckTitle, [
+        STR.noDeckBody,
         "$deck.html?p=intro-sql",
       ]);
       return;
@@ -185,12 +210,9 @@
       meta = await r.json();
     } catch (err) {
       const isFile = location.protocol === "file:";
-      showError("Nu am putut încărca prezentarea „" + id + "”", isFile
-        ? ["Pagina este deschisă direct din fișier (file://), iar browserul blochează încărcarea slide-urilor.",
-           "Pornește un server local în directorul proiectului:",
-           "$python -m http.server 8080",
-           "apoi deschide <strong>http://localhost:8080</strong>."]
-        : ["Verifică dacă există directorul <strong>" + CFG.root + id + "</strong> și fișierul <strong>presentation.json</strong> în el."]);
+      showError(STR.loadErrorTitle.replace("{id}", id), isFile
+        ? STR.fileProtocolLines
+        : [STR.checkFolder.replace("{path}", CFG.root + id)]);
       return;
     }
 
@@ -205,11 +227,13 @@
         )
       );
     } catch (err) {
-      showError("Slide lipsă", ["Nu am putut încărca fișierul <strong>" + err.message + "</strong> din " + base]);
+      showError(STR.missingSlideTitle, [
+        STR.missingSlideBody.replace("{file}", err.message).replace("{path}", base),
+      ]);
       return;
     }
 
-    document.title = meta.title + " — Prezentări";
+    document.title = meta.title + STR.titleSuffix;
     chipTitle.textContent = meta.title;
     const deckAccent = meta.accent || "teal";
 
@@ -223,7 +247,7 @@
       slides.push(el);
     });
 
-    // semnătura autorului (dacă e configurată) — doar pe slide-ul de titlu și pe cel final
+    // author signature (if configured) — only on the title and final slides
     if (CFG.author && slides.length) {
       const mono = CFG.monogram ||
         CFG.author.split(/\s+/).map((w) => w[0]).join("").toUpperCase().slice(0, 2);

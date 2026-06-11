@@ -1,19 +1,19 @@
-###### Sintaxă
+###### Syntax
 
-## Tot ce știe Markdown, plus cod colorat
+## Everything Markdown can do, plus highlighted code
 
-Text obișnuit, **bold**, *italic*, `cod inline`, [linkuri](https://github.com) — plus liste, citate și tabele:
+Regular text, **bold**, *italic*, `inline code`, [links](https://github.com) — plus lists, quotes and tables:
 
-> Citatele sunt evidențiate cu accentul slide-ului.
+> Quotes are highlighted with the slide's accent color.
 
 ```sql
-SELECT Nume, Oras
-FROM Clienti
-WHERE Oras = 'Cluj-Napoca'
-ORDER BY Nume;
+SELECT Name, City
+FROM Customers
+WHERE City = 'Cluj-Napoca'
+ORDER BY Name;
 ```
 
-| Element | Suportat |
-|---------|----------|
-| Tabele GFM | da |
-| Highlighting | da (highlight.js, local) |
+| Feature | Supported |
+|---------|-----------|
+| GFM tables | yes |
+| Highlighting | yes (highlight.js, local) |

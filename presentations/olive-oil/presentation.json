@@ -1,0 +1,13 @@
+{
+  "title": "Why olive oil is great for you",
+  "description": "A lighthearted sample deck: six millennia of liquid gold in five slides.",
+  "accent": "emerald",
+  "tags": ["Demo", "Food"],
+  "slides": [
+    "01-title.md",
+    "02-liquid-gold.md",
+    "03-numbers.md",
+    "04-kitchen.md",
+    "05-final.md"
+  ]
+}

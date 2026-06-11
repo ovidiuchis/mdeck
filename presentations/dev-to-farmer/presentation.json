@@ -1,0 +1,13 @@
+{
+  "title": "Why to switch from developer to farmer in 2026",
+  "description": "Satirical sample deck: trading the infinite backlog for finite tomatoes.",
+  "accent": "amber",
+  "tags": ["Demo", "Satire"],
+  "slides": [
+    "01-title.md",
+    "02-the-case.md",
+    "03-numbers.md",
+    "04-comparison.md",
+    "05-final.md"
+  ]
+}

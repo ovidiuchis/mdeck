@@ -1,9 +1,19 @@
 {
   "collections": [
     {
-      "title": "Demo",
-      "description": "Prezentări de exemplu incluse în motor.",
+      "title": "Product tour",
+      "description": "What MDECK can do: syntax, layouts and containers.",
       "presentations": ["demo"]
+    },
+    {
+      "title": "Just for fun",
+      "description": "Sample decks showing what real content looks like.",
+      "presentations": ["olive-oil"]
+    },
+    {
+      "title": "Life advice for free",
+      "description": "Questionable wisdom, beautifully presented.",
+      "presentations": ["dev-to-farmer"]
     }
   ]
 }
