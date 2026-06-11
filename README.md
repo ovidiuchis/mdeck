@@ -1,127 +1,134 @@
-# MDECK — motor de prezentări web din Markdown
+# MDECK — Markdown slide decks for the web
 
-Soluție 100% web (HTML + CSS + JavaScript, fără build) pentru prezentări de tip slide deck. Fiecare prezentare este un **director**, iar fiecare slide este un **fișier Markdown**.
+Zero-build, 100% static presentation engine (HTML + CSS + JavaScript). Each presentation is a **folder**, each slide is a **Markdown file**. Serve it from any static host — GitHub Pages, an intranet share, `python -m http.server` — and it just works.
 
-Acest repo conține doar **motorul** (BASE): viewer-ul, pagina de start, stilurile și o prezentare `demo/` ca exemplu. Conținutul (prezentările reale) stă în repo-uri separate care folosesc motorul — vezi [Embedding](#embedding-folosirea-motorului-din-alt-repo).
+- ✍️ **Write slides in plain Markdown** — one `.md` file per slide, versioned in git like the rest of your code
+- 🚀 **No build step, no dependencies to install** — markdown-it and highlight.js are vendored locally, so it works fully offline / on intranets, no CDN required
+- 🗂️ **Library home page with collections** — group decks by topic, course, or team
+- 🎨 **Opinionated, polished look** — accent colors, dark mode, layout containers (grids, cards, stats)
+- 🖥️ **Presenter-friendly** — keyboard navigation, overview grid, fullscreen, touch swipe, deep links to any slide, print-to-PDF export
+- 🔌 **Embeddable engine** — keep your content in a separate (even private) repo and load the engine from a CDN
 
-Markdown-ul este redat cu [markdown-it](https://github.com/markdown-it/markdown-it) (CommonMark + tabele GFM + linkify), iar codul este colorat cu [highlight.js](https://highlightjs.org/) — ambele **vendorizate local** în `assets/vendor/`, deci totul funcționează offline / pe intranet, fără CDN. `assets/md.js` e doar un adaptor subțire care adaugă frontmatter-ul per slide și containerele `:::`.
+This repo contains the **engine** only: the viewer, the home page, the styles, and a `demo/` presentation as an example. Real content lives in separate repos that consume the engine — see [Embedding](#embedding-using-the-engine-from-another-repo).
 
-## Structura
+Markdown is rendered with [markdown-it](https://github.com/markdown-it/markdown-it) (CommonMark + GFM tables + linkify) and code is highlighted with [highlight.js](https://highlightjs.org/) — both **vendored locally** in `assets/vendor/`. `assets/md.js` is just a thin adapter that adds per-slide frontmatter and `:::` containers.
+
+## Structure
 
 ```
 mdeck/
-├── index.html                  # pagina de start (lista prezentărilor)
-├── deck.html                   # viewer universal: deck.html?p=<director>
+├── index.html                  # home page (the presentation library)
+├── deck.html                   # universal viewer: deck.html?p=<folder>
 ├── assets/
-│   ├── style.css               # identitate vizuală + pagina de start
-│   ├── deck.css                # stilurile viewer-ului
-│   ├── home.js                 # logica paginii de start
-│   ├── deck.js                 # logica viewer-ului
-│   ├── md.js                   # adaptor Markdown (frontmatter + containere :::)
-│   └── vendor/                 # markdown-it, highlight.js (locale)
+│   ├── style.css               # visual identity + home page
+│   ├── deck.css                # viewer styles
+│   ├── home.js                 # home page logic
+│   ├── deck.js                 # viewer logic
+│   ├── md.js                   # Markdown adapter (frontmatter + ::: containers)
+│   └── vendor/                 # markdown-it, highlight.js (local)
 └── presentations/
-    ├── index.json              # lista / colecțiile de prezentări
-    └── demo/                   # exemplu — poate fi șters sau înlocuit
+    ├── index.json              # list / collections of presentations
+    └── demo/                   # example — delete or replace it
 ```
 
-## Pornire
+## Getting started
 
-Fișierele Markdown sunt încărcate prin `fetch()`, deci pagina trebuie servită printr-un server HTTP (nu deschisă direct cu `file://`):
+Markdown files are loaded via `fetch()`, so the page must be served over HTTP (not opened directly via `file://`):
 
 ```powershell
 python -m http.server 8080
-# sau
+# or
 npx serve .
 ```
 
-Apoi deschide **http://localhost:8080**.
+Then open **http://localhost:8080**.
 
-## Embedding (folosirea motorului din alt repo)
+## Embedding (using the engine from another repo)
 
-Un repo de conținut are nevoie doar de prezentări + două pagini HTML subțiri care încarcă motorul de aici. Asset-urile se pot servi direct de pe GitHub prin [jsDelivr](https://www.jsdelivr.com/):
+A content repo only needs the presentations plus two thin HTML pages that load the engine from here. Assets can be served straight from GitHub via [jsDelivr](https://www.jsdelivr.com/):
 
 ```
 https://cdn.jsdelivr.net/gh/ovidiuchis/mdeck@main/assets/...
 ```
 
-Structura unui repo de conținut:
+Structure of a content repo:
 
 ```
-repo-conținut/
-├── index.html        # copie subțire — CSS/JS din CDN
-├── deck.html         # copie subțire — CSS/JS din CDN
+content-repo/
+├── index.html        # thin copy — CSS/JS from CDN
+├── deck.html         # thin copy — CSS/JS from CDN
 └── presentations/
     ├── index.json
-    └── prezentarea-mea/...
+    └── my-presentation/...
 ```
 
-În `deck.html` și `index.html` din repo-ul de conținut se înlocuiesc referințele locale `assets/...` cu URL-urile CDN și, opțional, se setează configurarea **înainte** de scripturile motorului:
+In the content repo's `deck.html` and `index.html`, replace the local `assets/...` references with the CDN URLs and, optionally, set the configuration **before** the engine scripts:
 
 ```html
 <script>
   window.MDECK = {
-    root: "presentations/",   // directorul cu prezentări (implicit)
-    home: "index.html",       // pagina de start (implicit)
-    author: "Nume Prenume",   // semnătura de pe primul/ultimul slide (implicit: fără)
-    monogram: "NP"            // monograma semnăturii (implicit: inițialele autorului)
+    root: "presentations/",   // presentations folder (default)
+    home: "index.html",       // home page (default)
+    author: "Jane Doe",       // signature on the first/last slide (default: none)
+    monogram: "JD"            // signature monogram (default: author's initials)
   };
 </script>
 <script src="https://cdn.jsdelivr.net/gh/ovidiuchis/mdeck@main/assets/deck.js"></script>
 ```
 
-Exemplu complet de repo de conținut: [oc-prezentari](https://github.com/ovidiuchis/oc-prezentari).
+Complete example of a content repo: [oc-prezentari](https://github.com/ovidiuchis/oc-prezentari).
 
-> **Notă:** jsDelivr cache-uiește `@main` până la 12 ore. Pentru versiuni stabile, referă un tag sau un commit: `...@v1.0/assets/...`.
+> **Note:** jsDelivr caches `@main` for up to 12 hours. For stable releases, reference a tag or a commit: `...@v1.0/assets/...`.
 
-Alternative la CDN: includerea acestui repo ca **git submodule** (referințe relative `mdeck/assets/...`) sau pur și simplu **copierea** directorului `assets/`.
+Alternatives to the CDN: include this repo as a **git submodule** (relative references `mdeck/assets/...`) or simply **copy** the `assets/` folder.
 
-## Cum adaugi o prezentare nouă
+## Adding a new presentation
 
-1. Creează un director nou în `presentations/`, de ex. `presentations/intro-git/`.
-2. Adaugă un `presentation.json`:
+1. Create a new folder in `presentations/`, e.g. `presentations/intro-git/`.
+2. Add a `presentation.json`:
 
 ```json
 {
-  "title": "Introducere în Git",
-  "description": "Versionare de cod pentru începători.",
+  "title": "Introduction to Git",
+  "description": "Version control for beginners.",
   "accent": "violet",
-  "tags": ["Git", "Curs"],
-  "slides": ["01-titlu.md", "02-concepte.md", "03-final.md"]
+  "tags": ["Git", "Course"],
+  "slides": ["01-title.md", "02-concepts.md", "03-final.md"]
 }
 ```
 
-3. Scrie slide-urile ca fișiere `.md` (vezi sintaxa mai jos).
-4. Adaugă numele directorului în `presentations/index.json` — fie în lista plată `presentations`, fie într-o colecție (vezi mai jos).
+3. Write the slides as `.md` files (see the syntax below).
+4. Add the folder name to `presentations/index.json` — either in the flat `presentations` list or inside a collection (see below).
 
-Gata — apare automat pe pagina de start.
+Done — it shows up automatically on the home page.
 
-## Colecții
+## Collections
 
-Prezentările pot fi grupate pe pagina de start în **colecții** (de ex. „Internship 2026", „ASiS generale"). În `presentations/index.json`:
+Presentations can be grouped on the home page into **collections** (e.g. "Internship 2026", "Company general"). In `presentations/index.json`:
 
 ```json
 {
   "collections": [
     {
       "title": "Internship 2026",
-      "description": "Materialele programului de internship.",
+      "description": "Materials for the internship program.",
       "presentations": ["intro-git", "intro-sql"]
     },
     {
-      "title": "ASiS generale",
-      "presentations": ["asis-onboarding"]
+      "title": "Company general",
+      "presentations": ["onboarding"]
     }
   ]
 }
 ```
 
-- `title` — numele colecției, afișat ca antet de secțiune; `description` e opțională.
-- Ordinea colecțiilor și a prezentărilor din listă este ordinea de afișare.
-- Formatul vechi rămâne valabil: un simplu `{ "presentations": ["demo"] }` afișează toate cardurile într-o singură grilă, fără antete. Cele două se pot și combina — prezentările din lista plată `presentations` apar la final, fără titlu de colecție.
+- `title` — the collection name, shown as a section header; `description` is optional.
+- The order of collections and of the presentations inside them is the display order.
+- The old format still works: a plain `{ "presentations": ["demo"] }` renders all cards in a single grid, without headers. The two can be combined — presentations in the flat `presentations` list are shown at the end, without a collection title.
 
-## Sintaxa unui slide
+## Slide syntax
 
-Un slide = un fișier Markdown, opțional cu frontmatter:
+A slide = one Markdown file, optionally with frontmatter:
 
 ```markdown
 ---
@@ -129,69 +136,69 @@ layout: title        # title | section | center | default
 accent: indigo       # teal | indigo | violet | amber | rose | emerald | sky
 ---
 
-###### Eticheta mică de deasupra (eyebrow)
+###### Small label above the title (eyebrow)
 
-## Titlul slide-ului
+## Slide title
 
-Text obișnuit, **bold**, *italic*, `cod inline`, [linkuri](https://...).
+Regular text, **bold**, *italic*, `inline code`, [links](https://...).
 
-- liste cu buline
-1. liste numerotate
+- bullet lists
+1. numbered lists
 
-> Citate evidențiate
+> Highlighted quotes
 
-| Tabele | Suportate |
+| Tables | Supported |
 |--------|-----------|
-| da     | desigur   |
+| yes    | of course |
 ```
 
-### Blocuri de cod cu highlighting
+### Code blocks with highlighting
 
 ````markdown
 ```sql
-SELECT Nume, Oras FROM Clienti WHERE Oras = 'Cluj-Napoca';
+SELECT Name, City FROM Customers WHERE City = 'Cluj-Napoca';
 ```
 ````
 
-Limbajele uzuale sunt incluse (sql, js/ts, python, bash, powershell, json, html, css, c#, java...); pentru altele, descarcă fișierul limbajului din highlight.js în `assets/vendor/languages/` și include-l în `deck.html`.
+The usual languages are included (sql, js/ts, python, bash, powershell, json, html, css, c#, java...); for others, download the language file from highlight.js into `assets/vendor/languages/` and include it in `deck.html`.
 
-### Containere pentru layout (grile, carduri, statistici)
+### Layout containers (grids, cards, stats)
 
 ```markdown
 ::: grid 3
 ::: card teal
-### Titlu card
-Conținutul cardului.
+### Card title
+Card content.
 :::
 ::: card indigo
-### Alt card
-- merge și cu liste
+### Another card
+- lists work too
 :::
 ::: stat violet
 ## 250+
-Eticheta statisticii
+The stat label
 :::
 :::
 ```
 
-`grid 2|3|4` creează coloane; `card <accent>` un card colorat; `stat <accent>` un număr mare cu etichetă. Fiecare `:::` gol închide containerul curent.
+`grid 2|3|4` creates columns; `card <accent>` a colored card; `stat <accent>` a big number with a label. Each empty `:::` closes the current container.
 
-## Navigare în prezentare
+## Navigating a presentation
 
-| Tastă / gest | Acțiune |
-|--------------|---------|
-| `→` `↓` `Space` `PgDn` / click | slide următor |
-| `←` `↑` `PgUp` | slide anterior |
-| `Home` / `End` | primul / ultimul slide |
-| `F` | ecran complet |
-| `H` | înapoi la lista de prezentări (Home) |
-| `D` | comută tema închisă / deschisă (memorată în browser) |
-| `G` sau `O` | vedere de ansamblu (grilă cu toate slide-urile) |
-| `Esc` | închide vederea de ansamblu |
-| swipe stânga/dreapta | navigare pe touch |
+| Key / gesture | Action |
+|---------------|--------|
+| `→` `↓` `Space` `PgDn` / click | next slide |
+| `←` `↑` `PgUp` | previous slide |
+| `Home` / `End` | first / last slide |
+| `F` | fullscreen |
+| `H` | back to the presentation list (Home) |
+| `D` | toggle dark / light theme (remembered in the browser) |
+| `G` or `O` | overview (grid with all slides) |
+| `Esc` | close the overview |
+| swipe left/right | touch navigation |
 
-Fiecare slide are URL propriu (`deck.html?p=demo#3`) — poți trimite link direct către un slide.
+Every slide has its own URL (`deck.html?p=demo#3`) — you can link directly to a slide.
 
-## Tipărire / export PDF
+## Printing / PDF export
 
-Deschide prezentarea și folosește *Print → Save as PDF* din browser — fiecare slide se așază pe propria pagină.
+Open the presentation and use *Print → Save as PDF* in the browser — each slide lands on its own page.
