@@ -1,25 +1,26 @@
 /* ============================================================
-   md.js — adaptor peste markdown-it + highlight.js (vendorizate
-   în assets/vendor/, deci totul funcționează offline / intranet).
+   md.js — adapter on top of markdown-it + highlight.js (both
+   vendored in assets/vendor/, so everything works offline / on
+   intranets).
 
-   Păstrează ce e specific prezentărilor noastre:
-     • frontmatter per slide (--- layout / accent / image ---)
-     • containerele ::: pentru layout:
-         ::: grid 2|3|4|1-2     grilă de coloane (și proporții ex. 1-2)
-         ::: split / ::: col    două jumătăți centrate vertical
-         ::: columns 2|3        text curgător pe mai multe coloane
-         ::: card <accent>      card colorat (teal, indigo, violet, amber, rose, emerald, sky)
-         ::: stat <accent>      statistică mare (## număr + paragraf etichetă)
-         ::: timeline           cronologie verticală (dintr-o listă)
-         ::: steps              pași numerotați (dintr-o listă numerotată)
-         ::: callout info|warn|ok|tip   casetă de notă colorată
-         :::                    închide containerul curent
-     • iconițe inline  :check: :rocket: ...  (SVG vendorizat, vezi ICONS)
-     • taste inline    [[Ctrl+S]] → <kbd>
-     • diagrame        ```mermaid ... ```  (randate lazy de deck.js)
-     • formule         $inline$ și $$bloc$$ (randate lazy cu KaTeX de deck.js)
-   Restul sintaxei Markdown (CommonMark + tabele GFM) e tratat
-   integral de markdown-it; highlighting-ul de cod de highlight.js.
+   Adds the MDECK-specific bits:
+     • per-slide frontmatter (--- layout / accent / image ---)
+     • ::: layout containers:
+         ::: grid 2|3|4|1-2     column grid (and ratios, e.g. 1-2)
+         ::: split / ::: col    two vertically centered halves
+         ::: columns 2|3        body text flowing across columns
+         ::: card <accent>      colored card (teal, indigo, violet, amber, rose, emerald, sky)
+         ::: stat <accent>      big statistic (## number + label paragraph)
+         ::: timeline           vertical timeline (from a list)
+         ::: steps              numbered steps (from an ordered list)
+         ::: callout info|warn|ok|tip   colored note box
+         :::                    close the current container
+     • inline icons    :check: :rocket: ...  (vendored SVG, see ICONS)
+     • inline keys     [[Ctrl+S]] → <kbd>
+     • diagrams        ```mermaid ... ```  (rendered lazily by deck.js)
+     • math            $inline$ and $$block$$ (rendered lazily by KaTeX in deck.js)
+   The rest of the Markdown syntax (CommonMark + GFM tables) is
+   handled entirely by markdown-it; code highlighting by highlight.js.
    ============================================================ */
 
 (function (global) {
@@ -35,13 +36,13 @@
       if (lang && hljs.getLanguage(lang)) {
         try {
           return hljs.highlight(code, { language: lang, ignoreIllegals: true }).value;
-        } catch (e) { /* cade pe escaping-ul implicit */ }
+        } catch (e) { /* fall through to default escaping */ }
       }
       return "";
     },
   });
 
-  // link-urile se deschid în tab nou
+  // links open in a new tab
   const defaultLinkOpen = md.renderer.rules.link_open ||
     ((tokens, idx, options, env, self) => self.renderToken(tokens, idx, options));
   md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
@@ -54,8 +55,8 @@
     return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
   }
 
-  /* ---------- iconițe inline :name: (SVG, currentColor) ---------- */
-  /* set Feather-style; toate 24×24, fără fill, stroke = culoarea textului */
+  /* ---------- inline icons :name: (SVG, currentColor) ---------- */
+  /* Feather-style set; all 24×24, no fill, stroke = text color */
   const I = (p) =>
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
     'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + "</svg>";
@@ -95,7 +96,7 @@
   md.renderer.rules.icon = (tokens, idx) =>
     '<span class="icon">' + ICONS[tokens[idx].meta.name] + "</span>";
 
-  /* ---------- taste inline [[Ctrl+S]] → <kbd> ---------- */
+  /* ---------- inline keys [[Ctrl+S]] → <kbd> ---------- */
   md.inline.ruler.before("emphasis", "kbd", function (state, silent) {
     if (state.src.charCodeAt(state.pos) !== 0x5b /* [ */) return false;
     const m = /^\[\[([^\]\n]+)\]\]/.exec(state.src.slice(state.pos));
@@ -107,7 +108,7 @@
   md.renderer.rules.kbd = (tokens, idx) =>
     "<kbd>" + md.utils.escapeHtml(tokens[idx].content) + "</kbd>";
 
-  /* ---------- diagrame ```mermaid → <pre class="mermaid"> ---------- */
+  /* ---------- diagrams ```mermaid → <pre class="mermaid"> ---------- */
   const defaultFence =
     md.renderer.rules.fence ||
     ((tokens, idx, options, env, self) => self.renderToken(tokens, idx, options));
@@ -118,7 +119,7 @@
     return defaultFence(tokens, idx, options, env, self);
   };
 
-  /* ---------- containerele ::: (cu imbricare) ---------- */
+  /* ---------- ::: containers (with nesting) ---------- */
 
   function accentAttr(a) {
     return a ? ' data-accent="' + escAttr(a) + '"' : "";
@@ -130,7 +131,7 @@
 
     if (kind === "grid" || kind === "cols") {
       const spec = t[1] || "2";
-      // proporții explicite: "1-2", "1-2-1" → grid-template-columns
+      // explicit ratios: "1-2", "1-2-1" → grid-template-columns
       if (/^\d+(-\d+)+$/.test(spec)) {
         const tpl = spec.split("-").map((c) => c + "fr").join(" ");
         return '<div class="grid" style="grid-template-columns:' + tpl + '">';
@@ -155,23 +156,24 @@
     return '<div class="' + escAttr(t.join(" ")) + '">';
   }
 
-  /* Scoate formulele $…$ / $$…$$ din text înainte de markdown-it (altfel
-     `_`, `*`, `<` din LaTeX sunt interpretate), lăsând un placeholder din
-     zona Unicode privată (trece neatins prin markdown-it). Codul (fence și
-     `inline`) e sărit. deck.js le randează apoi cu KaTeX, la cerere. */
+  /* Pull $…$ / $$…$$ formulas out of the text before markdown-it runs
+     (otherwise LaTeX's `_`, `*`, `<` get interpreted), leaving a
+     private-use Unicode placeholder (passes through markdown-it untouched).
+     Code (fenced and `inline`) is skipped. deck.js then renders them with
+     KaTeX, on demand. */
   function stashMath(src, math) {
     const PH = (tex, display) =>
       "" + (math.push({ tex: tex.trim(), display }) - 1) + "";
-    // separă blocurile de cod ```…``` (impare) de restul (pare)
+    // split fenced code blocks ```…``` (odd) from the rest (even)
     return src
       .split(/(```[\s\S]*?```)/g)
       .map((part, i) => {
-        if (i % 2) return part; // bloc de cod — neatins
-        // separă codul inline `…` (impar) de text (par)
+        if (i % 2) return part; // code block — untouched
+        // split inline code `…` (odd) from text (even)
         return part
           .split(/(`+[^`]*`+)/g)
           .map((seg, j) => {
-            if (j % 2) return seg; // cod inline — neatins
+            if (j % 2) return seg; // inline code — untouched
             return seg
               .replace(/\$\$([\s\S]+?)\$\$/g, (_, t) => PH(t, true))
               .replace(/\$(?![\s$])((?:\\.|[^$\\\n])*?)(?<!\s)\$/g, (_, t) => PH(t, false));
@@ -181,8 +183,8 @@
       .join("");
   }
 
-  /* Împarte sursa la liniile ::: (ignorându-le pe cele din blocuri
-     de cod) și redă fiecare segment cu markdown-it. */
+  /* Split the source on ::: lines (ignoring those inside code
+     blocks) and render each segment with markdown-it. */
   function render(src) {
     src = src.replace(/\r\n/g, "\n");
     const math = [];
@@ -228,13 +230,13 @@
             ? '<div class="math math-display">' + esc + "</div>"
             : '<span class="math">' + esc + "</span>";
         })
-        // scoate <p> care învelește o singură formulă-bloc (div invalid în p)
+        // unwrap <p> around a lone display formula (a div is invalid inside p)
         .replace(/<p>\s*(<div class="math math-display">[\s\S]*?<\/div>)\s*<\/p>/g, "$1");
     }
     return html;
   }
 
-  /* ---------- frontmatter slide ---------- */
+  /* ---------- slide frontmatter ---------- */
 
   function parseSlide(src) {
     src = src.replace(/^﻿/, "");

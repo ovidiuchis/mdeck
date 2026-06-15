@@ -6,14 +6,9 @@
       "presentations": ["demo"]
     },
     {
-      "title": "Just for fun",
-      "description": "Sample decks showing what real content looks like.",
-      "presentations": ["olive-oil"]
-    },
-    {
       "title": "Life advice for free",
-      "description": "Questionable wisdom, beautifully presented.",
-      "presentations": ["dev-to-farmer"]
+      "description": "Sample decks showing what real content looks like.",
+      "presentations": ["olive-oil", "dev-to-farmer"]
     }
   ]
 }

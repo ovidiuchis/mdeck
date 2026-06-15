@@ -1,16 +1,16 @@
 /* ============================================================
-   Viewer de slide-uri — identitatea „Ovidiu Chiș”, varianta
-   profesională. Conținut pe alb-os; titlu/secțiune pe
-   ultramarin plin. Proiectate la 1280×720, scalate la viewport.
+   Slide viewer — default "Klein" theme. Content on off-white;
+   title/section slides on solid ultramarine. Designed at
+   1280×720 and scaled to the viewport.
    ============================================================ */
 
 html, body {
   height: 100%;
   overflow: hidden;
-  background: var(--code-bg); /* cadru constant, indiferent de temă */
+  background: var(--code-bg); /* constant frame, regardless of theme */
 }
 
-/* ---------- scenă ---------- */
+/* ---------- stage ---------- */
 #stage-wrap {
   position: fixed;
   inset: 0;
@@ -45,8 +45,8 @@ html, body {
               visibility 0s linear 0.25s;
 }
 
-/* copiii nu se comprimă: conținutul prea lung depășește vizibil
-   slide-ul în loc să fie tăiat pe tăcute */
+/* children don't shrink: overly long content visibly overflows
+   the slide instead of being silently clipped */
 .slide > * { flex-shrink: 0; }
 
 .slide.current {
@@ -57,9 +57,9 @@ html, body {
               transform 0.25s ease-out;
 }
 
-/* ---------- tipografie în slide ---------- */
+/* ---------- in-slide typography ---------- */
 
-/* eyebrow / etichetă mică (h6 în Markdown) */
+/* eyebrow / small label (h6 in Markdown) */
 .slide h6 {
   display: flex;
   align-items: center;
@@ -209,7 +209,7 @@ html, body {
   box-shadow: var(--shadow);
 }
 
-/* ---------- cod ---------- */
+/* ---------- code ---------- */
 .slide code {
   font-family: var(--mono);
   font-size: 0.88em;
@@ -247,7 +247,7 @@ html.dark .slide code {
   font-variant-ligatures: none;
 }
 
-/* token-uri highlight.js, în paleta proprie */
+/* highlight.js tokens, in the theme palette */
 .hljs-keyword, .hljs-selector-tag, .hljs-built_in,
 .hljs-section, .hljs-name            { color: #f0bf58; font-weight: 600; }
 .hljs-string, .hljs-attr,
@@ -260,7 +260,7 @@ html.dark .slide code {
 .hljs-type, .hljs-variable           { color: #86c8f0; }
 .hljs-operator, .hljs-punctuation    { color: #c9c4b4; }
 
-/* ---------- tabele ---------- */
+/* ---------- tables ---------- */
 .slide table {
   width: 100%;
   margin: 18px 0;
@@ -293,7 +293,7 @@ html.dark .slide code {
 .slide tr:last-child td { border-bottom: none; }
 .slide td code { font-size: 16px; }
 
-/* ---------- containere ::: ---------- */
+/* ---------- ::: containers ---------- */
 .slide .grid {
   display: grid;
   gap: 22px;
@@ -325,7 +325,7 @@ html.dark .slide code {
 .slide .card ul > li { padding-left: 22px; }
 .slide .card ul > li::before { width: 8px; height: 8px; top: 0.5em; }
 
-/* statistici mari */
+/* big statistics */
 .slide .stat {
   padding: 22px 24px;
   background: var(--paper);
@@ -355,12 +355,12 @@ html.dark .slide code {
   margin: 10px 0 0;
 }
 
-/* grile suplimentare + proporții (style inline din md.js le poate suprascrie) */
+/* extra grids + ratios (inline style from md.js can override them) */
 .slide .g1 { grid-template-columns: 1fr; }
 .slide .g5 { grid-template-columns: repeat(5, 1fr); }
 .slide .g6 { grid-template-columns: repeat(6, 1fr); }
 
-/* ---------- split (două jumătăți centrate) + col ---------- */
+/* ---------- split (two centered halves) + col ---------- */
 .slide .split {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -373,7 +373,7 @@ html.dark .slide code {
 .slide .col > *:last-child { margin-bottom: 0; }
 .slide .col img, .slide .col pre { margin: 0; }
 
-/* ---------- columns (text curgător) ---------- */
+/* ---------- columns (flowing text) ---------- */
 .slide .columns {
   column-gap: 40px;
   column-rule: 1px solid var(--line-mid);
@@ -383,7 +383,7 @@ html.dark .slide code {
 .slide .columns h3 { break-after: avoid; }
 .slide .columns li { break-inside: avoid; }
 
-/* ---------- timeline (cronologie verticală) ---------- */
+/* ---------- timeline (vertical timeline) ---------- */
 .slide .timeline { margin: 24px 0; }
 .slide .timeline ul, .slide .timeline ol {
   list-style: none;
@@ -418,7 +418,7 @@ html.dark .slide code {
 }
 .slide .timeline li strong { display: inline; color: var(--ink); }
 
-/* ---------- steps (pași numerotați, orizontal) ---------- */
+/* ---------- steps (numbered steps, horizontal) ---------- */
 .slide .steps ol {
   list-style: none;
   counter-reset: step;
@@ -454,7 +454,7 @@ html.dark .slide code {
 }
 .slide .steps ol > li strong { color: var(--ink); }
 
-/* ---------- callout (casetă de notă) ---------- */
+/* ---------- callout (note box) ---------- */
 .slide .callout {
   position: relative;
   margin: 18px 0;
@@ -491,7 +491,7 @@ html.dark .slide code {
 .slide .callout-warn { --cc: var(--coral); }
 .slide .callout-warn::before { content: "!"; }
 
-/* ---------- iconițe inline ---------- */
+/* ---------- inline icons ---------- */
 .slide .icon {
   display: inline-flex;
   vertical-align: -0.18em;
@@ -503,7 +503,7 @@ html.dark .slide code {
   color: var(--a, var(--ultra));
 }
 
-/* ---------- taste [[ ]] → kbd ---------- */
+/* ---------- keys [[ ]] → kbd ---------- */
 .slide kbd {
   font-family: var(--mono);
   font-size: 0.82em;
@@ -534,9 +534,9 @@ html.dark .slide code {
 .slide .katex { font-size: 1.06em; }
 .slide .katex-display { margin: 20px 0; overflow-x: auto; overflow-y: hidden; }
 
-/* ---------- layout-uri ---------- */
+/* ---------- layouts ---------- */
 
-/* slide de titlu și de secțiune — ultramarin plin */
+/* title and section slides — solid ultramarine */
 .layout-title, .layout-section {
   justify-content: center;
   align-items: flex-start;
@@ -567,7 +567,7 @@ html.dark .slide code {
 .layout-title p, .layout-section p { color: rgba(245, 242, 233, 0.85); }
 .layout-title strong, .layout-section strong { color: var(--gold); }
 
-/* slide de secțiune */
+/* section slide */
 .layout-section h1 {
   font-size: 66px;
   max-width: 1000px;
@@ -585,7 +585,7 @@ html.dark .slide code {
 
 .layout-section p { font-size: 23px; margin-top: 22px; }
 
-/* conținut centrat */
+/* centered content */
 .layout-center {
   justify-content: center;
   align-items: center;
@@ -600,7 +600,7 @@ html.dark .slide code {
 .layout-center ul, .layout-center ol { text-align: left; }
 .layout-center .grid { width: 100%; }
 
-/* ---------- full-image (imagine pe tot slide-ul, titlu overlay) ---------- */
+/* ---------- full-image (image fills the slide, title overlaid) ---------- */
 .slide.has-image {
   background:
     linear-gradient(to top,
@@ -623,7 +623,7 @@ html.dark .slide code {
 .layout-full-image strong { color: var(--gold); }
 .layout-full-image a { color: #fff; }
 
-/* ---------- quote (citat de impact) ---------- */
+/* ---------- quote (impact quote) ---------- */
 .layout-quote {
   justify-content: center;
   align-items: center;
@@ -665,7 +665,7 @@ html.dark .slide code {
   color: var(--ink-soft);
 }
 
-/* ---------- end / thanks (slide final pe ultramarin) ---------- */
+/* ---------- end / thanks (final slide on ultramarine) ---------- */
 .layout-end, .layout-thanks {
   justify-content: center;
   align-items: center;
@@ -700,7 +700,7 @@ html.dark .slide code {
 }
 .layout-end .icon svg, .layout-thanks .icon svg { color: var(--gold); }
 
-/* ---------- semnătura (doar pe titlu și final) ---------- */
+/* ---------- signature (only on title and final slides) ---------- */
 .sign {
   position: absolute;
   left: 84px;
@@ -736,7 +736,7 @@ html.dark .slide code {
   box-shadow: 3px 3px 0 var(--ultra-deep);
 }
 
-/* ---------- chrome (în afara scenei, fix pe viewport) ---------- */
+/* ---------- chrome (outside the stage, fixed to the viewport) ---------- */
 #progress {
   position: fixed;
   top: 0; left: 0;
@@ -828,7 +828,7 @@ body.hud-visible #hud { opacity: 1; }
 
 #hud .controls #counter b { color: var(--ink); font-weight: 700; }
 
-/* ---------- mod ansamblu (overview) ---------- */
+/* ---------- overview mode ---------- */
 #overview {
   position: fixed;
   inset: 0;
@@ -896,7 +896,7 @@ body.overview #stage-wrap { visibility: hidden; }
   padding: 3px 10px;
 }
 
-/* ---------- ecran de eroare ---------- */
+/* ---------- error screen ---------- */
 #deck-error {
   position: fixed;
   inset: 0;
@@ -911,20 +911,20 @@ body.overview #stage-wrap { visibility: hidden; }
 
 #deck-error a { color: var(--ultra); font-weight: 600; }
 
-/* ---------- print / export PDF ----------
-   Fiecare slide devine exact o pagină 16:9 (1280×720), edge-to-edge,
-   fără margini. „Print → Save as PDF” din browser dă un fişier curat,
-   un slide pe pagină, gata de trimis pe email.
-   Vezi printDeck() din deck.js: aşteaptă mermaid/KaTeX înainte de print. */
+/* ---------- print / PDF export ----------
+   Each slide becomes exactly one 16:9 page (1280×720), edge-to-edge,
+   with no margins. The browser's "Print → Save as PDF" produces a clean
+   file, one slide per page, ready to email.
+   See printDeck() in deck.js: it waits for mermaid/KaTeX before printing. */
 
-/* Pagina PDF are fix proporţia slide-ului → zero margini, zero scalare. */
+/* The PDF page matches the slide's exact ratio → zero margins, zero scaling. */
 @page {
   size: 1280px 720px;
   margin: 0;
 }
 
 @media print {
-  /* păstrează fundalurile pline, diagramele şi codul colorat în PDF */
+  /* keep solid backgrounds, diagrams and colored code in the PDF */
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -952,14 +952,14 @@ body.overview #stage-wrap { visibility: hidden; }
     visibility: visible !important;
     transform: none !important;
     transition: none !important;
-    overflow: hidden;            /* conţinutul nu curge pe pagina următoare */
+    overflow: hidden;            /* content doesn't flow onto the next page */
     break-after: page;
-    page-break-after: always;    /* alias pentru browsere mai vechi */
+    page-break-after: always;    /* alias for older browsers */
     break-inside: avoid;
     page-break-inside: avoid;
   }
 
-  /* fără pagină albă suplimentară după ultimul slide */
+  /* no extra blank page after the last slide */
   .slide:last-child {
     break-after: auto;
     page-break-after: auto;

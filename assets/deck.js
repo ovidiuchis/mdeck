@@ -15,8 +15,8 @@
 (function () {
   "use strict";
 
-  /* unde stau vendorele (mermaid/katex) — lângă acest script, fie local,
-     fie pe CDN; derivat din src-ul lui deck.js */
+  /* where the vendored libs (mermaid/katex) live — next to this script,
+     whether local or on a CDN; derived from deck.js's own src */
   const SELF = (document.currentScript && document.currentScript.src) || "";
   const VENDOR = SELF.replace(/[^/]*$/, "") + "vendor/";
 
@@ -26,16 +26,16 @@
   );
   if (!CFG.root.endsWith("/")) CFG.root += "/";
 
-  /* ---------- theming per prezentare (presentation.json → "theme") ----------
-     Suprascrie variabilele CSS din :root fără a atinge motorul:
+  /* ---------- per-presentation theming (presentation.json → "theme") ----------
+     Overrides the :root CSS variables without touching the engine:
        "theme": {
          "colors":      { "ultra": "#c0392b", "gold": "#e0a800", "bone": "#faf7f0" },
          "fonts":       { "display": "Fraunces", "sans": "Inter", "mono": "JetBrains Mono" },
          "googleFonts": "Fraunces:wght@700;900&family=Inter:wght@400;600"
        }
-     Cheile din "colors"/"fonts" se mapează direct la --<cheie> (vezi style.css).
-     Injectăm un <style>:root{…}</style>, deci regulile html.dark din style.css
-     rămân mai specifice și tema închisă continuă să funcţioneze. */
+     Keys in "colors"/"fonts" map directly to --<key> (see style.css).
+     We inject a <style>:root{…}</style>, so the html.dark rules in style.css
+     stay more specific and the dark theme keeps working. */
   function applyTheme(theme) {
     if (!theme || typeof theme !== "object") return;
     if (theme.googleFonts) {
@@ -64,8 +64,8 @@
     document.head.appendChild(style);
   }
 
-  /* Accent per deck/slide: nume din paletă (data-accent) SAU valoare liberă
-     (#hex, rgb(), hsl(), var(...)) aplicată direct pe --a. */
+  /* Per-deck/slide accent: a palette name (data-accent) OR a free value
+     (#hex, rgb(), hsl(), var(...)) applied straight to --a. */
   function setAccent(el, value) {
     if (!value) return;
     if (value.charAt(0) === "#" || /^(rgb|hsl|var\()/i.test(value))
@@ -197,15 +197,15 @@
     try { localStorage.setItem("mdeck-theme", dark ? "dark" : "light"); } catch (e) {}
   }
 
-  /* ---------- export PDF (Print to PDF nativ) ----------
-     Toate slide-urile sunt deja în DOM; @media print din deck.css le
-     transformă în pagini 16:9 edge-to-edge. Aici doar ne asigurăm că
-     mermaid/KaTeX au terminat de randat înainte de a deschide dialogul. */
+  /* ---------- PDF export (native Print to PDF) ----------
+     All slides are already in the DOM; @media print in deck.css turns
+     them into edge-to-edge 16:9 pages. Here we just make sure
+     mermaid/KaTeX have finished rendering before opening the dialog. */
   let enhanceDone = Promise.resolve();
   async function printDeck() {
     closeOverview();
     try { await enhanceDone; } catch (e) {}
-    // un frame ca browserul să aşeze diagramele proaspăt randate
+    // one frame so the browser can lay out freshly rendered diagrams
     await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
     window.print();
   }
@@ -280,12 +280,12 @@
     document.head.appendChild(l);
   }
 
-  /* Randează diagramele și formulele din slide-uri, încărcând librăriile
-     vendorizate la cerere. Nu blochează afișarea: rulează în fundal. */
+  /* Render the diagrams and formulas in the slides, loading the vendored
+     libraries on demand. Non-blocking: runs in the background. */
   async function enhance() {
     const dark = document.documentElement.classList.contains("dark");
 
-    // KaTeX — doar dacă md.js a produs elemente .math (formule extrase din $…$)
+    // KaTeX — only if md.js produced .math elements (formulas extracted from $…$)
     const maths = stage.querySelectorAll(".math");
     if (maths.length) {
       loadCss(VENDOR + "katex/katex.min.css");
@@ -297,12 +297,12 @@
               displayMode: el.classList.contains("math-display"),
               throwOnError: false,
             });
-          } catch (e) { /* lasă sursa brută dacă formula e invalidă */ }
+          } catch (e) { /* keep the raw source if the formula is invalid */ }
         });
-      } catch (e) { /* fără math dacă lipsește librăria */ }
+      } catch (e) { /* no math if the library is missing */ }
     }
 
-    // Mermaid — doar dacă există vreo diagramă
+    // Mermaid — only if there's at least one diagram
     if (stage.querySelector("pre.mermaid")) {
       try {
         await loadScript(VENDOR + "mermaid.min.js");
@@ -312,7 +312,7 @@
           fontFamily: "inherit",
         });
         await window.mermaid.run({ nodes: stage.querySelectorAll("pre.mermaid") });
-      } catch (e) { /* fără diagrame dacă lipsește librăria */ }
+      } catch (e) { /* no diagrams if the library is missing */ }
     }
   }
 
@@ -369,7 +369,7 @@
       el.className = "slide layout-" + (fm.layout || "default");
       setAccent(el, fm.accent || deckAccent);
       el.innerHTML = html;
-      // imagine de fundal (layout: full-image) — relativă la folderul prezentării
+      // background image (layout: full-image) — relative to the presentation folder
       if (fm.image) {
         const url = /^(https?:|data:|\/)/.test(fm.image) ? fm.image : base + fm.image;
         el.style.setProperty("--slide-image", "url('" + url.replace(/'/g, "%27") + "')");
@@ -379,7 +379,7 @@
       slides.push(el);
     });
 
-    // mermaid + KaTeX, încărcate doar dacă vreun slide chiar le folosește
+    // mermaid + KaTeX, loaded only if some slide actually uses them
     enhanceDone = enhance();
 
     // author signature (if configured) — only on the title and final slides

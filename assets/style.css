@@ -1,36 +1,38 @@
 /* ============================================================
-   Identitatea vizuală „Ovidiu Chiș” — varianta profesională
-   Ultramarin & aur pe alb-os, structură fermă (borduri de
-   cerneală, umbre dure mici), fără gradiente și fără zgomot.
+   MDECK — default "Klein" theme.
+   Ultramarine & gold on off-white, with a firm structure (ink
+   borders, small hard shadows), no gradients and no noise.
+   Every value is a CSS variable, so a deck can rebrand itself
+   via the "theme" block in its presentation.json.
    ============================================================ */
 
 :root {
-  /* fundaluri */
-  --bone: #f5f2e9;        /* alb-os cald — fundalul de bază */
-  --paper: #fffefa;       /* alb hârtie — carduri, suprafețe */
+  /* backgrounds */
+  --bone: #f5f2e9;        /* warm off-white — base background */
+  --paper: #fffefa;       /* paper white — cards, surfaces */
 
-  /* cerneală */
-  --ink: #191922;         /* negru-cerneală — text, borduri */
-  --ink-soft: #45454e;    /* text secundar */
-  --muted: #8a877e;       /* text estompat */
+  /* ink */
+  --ink: #191922;         /* ink black — text, borders */
+  --ink-soft: #45454e;    /* secondary text */
+  --muted: #8a877e;       /* muted text */
 
-  /* semnătura cromatică */
-  --ultra: #2033c4;       /* ultramarin Klein — culoarea principală */
-  --ultra-deep: #16227e;  /* ultramarin de noapte */
-  --gold: #eab438;        /* auriu cald — accent, folosit cu măsură */
+  /* signature palette */
+  --ultra: #2033c4;       /* Klein ultramarine — primary color */
+  --ultra-deep: #16227e;  /* deep night ultramarine */
+  --gold: #eab438;        /* warm gold — accent, used sparingly */
   --azure: #2d8fc4;
   --coral: #d6452f;
   --green: #2a8a5e;
   --plum: #6a44b8;
   --sky: #6db5dd;
 
-  /* derivate de temă */
-  --shadow-c: var(--ink);              /* culoarea umbrelor dure */
-  --dot: rgba(25, 25, 34, 0.045);      /* punctele texturii de fundal */
-  --line-soft: rgba(25, 25, 34, 0.16); /* linii fine (rânduri tabel) */
-  --line-mid: rgba(25, 25, 34, 0.32);  /* linii medii (separatoare, taguri) */
-  --code-bg: #191922;                  /* fundalul blocurilor de cod, fix în ambele teme */
-  --title-bg: var(--ultra);            /* fundalul slide-urilor de titlu/secțiune */
+  /* theme-derived values */
+  --shadow-c: var(--ink);              /* hard-shadow color */
+  --dot: rgba(25, 25, 34, 0.045);      /* background texture dots */
+  --line-soft: rgba(25, 25, 34, 0.16); /* hairlines (table rows) */
+  --line-mid: rgba(25, 25, 34, 0.32);  /* medium lines (dividers, tags) */
+  --code-bg: #191922;                  /* code-block background, fixed in both themes */
+  --title-bg: var(--ultra);            /* background of title/section slides */
 
   --border: 2px solid var(--ink);
   --shadow: 5px 5px 0 var(--shadow-c);
@@ -40,10 +42,10 @@
   --display: "Archivo", "Space Grotesk", sans-serif;
   --mono: "IBM Plex Mono", "Cascadia Code", Consolas, monospace;
 
-  --r: 4px;               /* colțuri abia rotunjite */
+  --r: 4px;               /* barely-rounded corners */
 }
 
-/* ---------- tema închisă (tasta D în prezentare) ---------- */
+/* ---------- dark theme (D key in a presentation) ---------- */
 html.dark {
   --bone: #14141c;
   --paper: #1d1d27;
@@ -57,7 +59,7 @@ html.dark {
   --line-mid: rgba(236, 232, 219, 0.28);
   --title-bg: var(--ultra-deep);
 
-  /* accente luminate, ca să rămână lizibile pe fundal închis */
+  /* brightened accents so they stay legible on a dark background */
   --ultra: #5e6ce0;
   --azure: #4fb2e6;
   --coral: #f06a52;
@@ -78,7 +80,7 @@ html, body {
 
 ::selection { background: var(--gold); color: #191922; }
 
-/* ---------- fundal: hârtie cu puncte foarte fine ---------- */
+/* ---------- background: paper with very fine dots ---------- */
 .ambient {
   position: fixed;
   inset: 0;
@@ -88,7 +90,7 @@ html, body {
     var(--bone);
 }
 
-/* ---------- layout pagină ---------- */
+/* ---------- page layout ---------- */
 .wrap {
   max-width: 1120px;
   margin: 0 auto;
@@ -168,7 +170,7 @@ header.site {
   color: var(--ink);
 }
 
-/* subliniere tip marker — auriul folosit chirurgical */
+/* marker-style underline — gold used surgically */
 .hero h1 .hl {
   background: linear-gradient(transparent 64%, var(--gold) 64%);
   padding: 0 4px;
@@ -182,7 +184,7 @@ header.site {
   color: var(--ink-soft);
 }
 
-/* ---------- grid prezentări ---------- */
+/* ---------- presentations grid ---------- */
 .decks {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
@@ -278,7 +280,7 @@ header.site {
 
 .deck-card:hover .go { transform: translateX(3px); }
 
-/* ---------- colecții ---------- */
+/* ---------- collections ---------- */
 .collections { padding: 44px 0 90px; }
 
 .collection + .collection { margin-top: 64px; }
@@ -319,7 +321,7 @@ header.site {
 
 .collection .decks { padding: 24px 0 0; }
 
-/* accente — nume vechi, paleta proprie */
+/* accents — legacy names mapped onto the theme palette */
 [data-accent="teal"]    { --a: var(--azure); }
 [data-accent="indigo"]  { --a: var(--ultra); }
 [data-accent="violet"]  { --a: var(--plum); }
@@ -328,7 +330,7 @@ header.site {
 [data-accent="emerald"] { --a: var(--green); }
 [data-accent="sky"]     { --a: var(--sky); }
 
-/* ---------- panou eroare ---------- */
+/* ---------- error panel ---------- */
 .error-panel {
   margin: 60px auto;
   max-width: 640px;
@@ -367,7 +369,7 @@ footer.site {
   border-top: 1px solid var(--line-mid);
 }
 
-/* ---------- buton temă (pagina de start) ---------- */
+/* ---------- theme button (home page) ---------- */
 .theme-btn {
   appearance: none;
   width: 36px;
