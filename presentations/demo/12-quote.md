@@ -1,6 +1,6 @@
 ---
 layout: quote
-accent: indigo
+accent: primary
 ---
 
 > Make the easy things easy, and the hard things possible.

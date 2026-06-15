@@ -11,11 +11,11 @@
 | Tech debt | grows forever | manure — also grows, but useful |
 
 ::: grid 2
-::: card emerald
+::: card green
 ### What you gain
 Sunlight, silence, vegetables with version numbers like "Tuesday".
 :::
-::: card rose
+::: card red
 ### What you lose
 Ctrl+Z. There is no undo on a planted field. Choose your commits wisely.
 :::

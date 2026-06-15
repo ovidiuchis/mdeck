@@ -2,39 +2,42 @@
    MDECK — default "Klein" theme.
    Ultramarine & gold on off-white, with a firm structure (ink
    borders, small hard shadows), no gradients and no noise.
-   Every value is a CSS variable, so a deck can rebrand itself
+   Every value is a CSS variable named by role (--bg, --surface,
+   --text, --primary, --accent…), so a deck can rebrand itself
    via the "theme" block in its presentation.json.
    ============================================================ */
 
 :root {
   /* backgrounds */
-  --bone: #f5f2e9;        /* warm off-white — base background */
-  --paper: #fffefa;       /* paper white — cards, surfaces */
+  --bg: #f5f2e9;            /* warm off-white — page background */
+  --surface: #fffefa;       /* paper white — cards, surfaces */
 
-  /* ink */
-  --ink: #191922;         /* ink black — text, borders */
-  --ink-soft: #45454e;    /* secondary text */
-  --muted: #8a877e;       /* muted text */
+  /* text & borders */
+  --text: #191922;          /* ink black — primary text, borders */
+  --text-soft: #45454e;     /* secondary text */
+  --text-muted: #8a877e;    /* muted text */
 
-  /* signature palette */
-  --ultra: #2033c4;       /* Klein ultramarine — primary color */
-  --ultra-deep: #16227e;  /* deep night ultramarine */
-  --gold: #eab438;        /* warm gold — accent, used sparingly */
-  --azure: #2d8fc4;
-  --coral: #d6452f;
-  --green: #2a8a5e;
-  --plum: #6a44b8;
-  --sky: #6db5dd;
+  /* brand */
+  --primary: #2033c4;       /* Klein ultramarine — primary / brand color */
+  --primary-deep: #16227e;  /* deep night ultramarine */
+  --accent: #eab438;        /* warm gold — accent, used sparingly */
+
+  /* named swatches — selectable per deck/slide via `accent` */
+  --swatch-blue: #2d8fc4;
+  --swatch-red: #d6452f;
+  --swatch-green: #2a8a5e;
+  --swatch-purple: #6a44b8;
+  --swatch-sky: #6db5dd;
 
   /* theme-derived values */
-  --shadow-c: var(--ink);              /* hard-shadow color */
+  --shadow-c: var(--text);              /* hard-shadow color */
   --dot: rgba(25, 25, 34, 0.045);      /* background texture dots */
   --line-soft: rgba(25, 25, 34, 0.16); /* hairlines (table rows) */
-  --line-mid: rgba(25, 25, 34, 0.32);  /* medium lines (dividers, tags) */
+  --line: rgba(25, 25, 34, 0.32);  /* medium lines (dividers, tags) */
   --code-bg: #191922;                  /* code-block background, fixed in both themes */
-  --title-bg: var(--ultra);            /* background of title/section slides */
+  --title-bg: var(--primary);            /* background of title/section slides */
 
-  --border: 2px solid var(--ink);
+  --border: 2px solid var(--text);
   --shadow: 5px 5px 0 var(--shadow-c);
   --shadow-sm: 3px 3px 0 var(--shadow-c);
 
@@ -47,38 +50,38 @@
 
 /* ---------- dark theme (D key in a presentation) ---------- */
 html.dark {
-  --bone: #14141c;
-  --paper: #1d1d27;
-  --ink: #ece8db;
-  --ink-soft: #b6b2a6;
-  --muted: #84817a;
+  --bg: #14141c;
+  --surface: #1d1d27;
+  --text: #ece8db;
+  --text-soft: #b6b2a6;
+  --text-muted: #84817a;
 
   --shadow-c: rgba(0, 0, 0, 0.55);
   --dot: rgba(236, 232, 219, 0.04);
   --line-soft: rgba(236, 232, 219, 0.12);
-  --line-mid: rgba(236, 232, 219, 0.28);
-  --title-bg: var(--ultra-deep);
+  --line: rgba(236, 232, 219, 0.28);
+  --title-bg: var(--primary-deep);
 
   /* brightened accents so they stay legible on a dark background */
-  --ultra: #5e6ce0;
-  --azure: #4fb2e6;
-  --coral: #f06a52;
-  --green: #3cba7a;
-  --plum: #976ee8;
-  --sky: #7ec9ec;
-  --gold: #f0bb4a;
+  --primary: #5e6ce0;
+  --swatch-blue: #4fb2e6;
+  --swatch-red: #f06a52;
+  --swatch-green: #3cba7a;
+  --swatch-purple: #976ee8;
+  --swatch-sky: #7ec9ec;
+  --accent: #f0bb4a;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
-  background: var(--bone);
-  color: var(--ink);
+  background: var(--bg);
+  color: var(--text);
   font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
 }
 
-::selection { background: var(--gold); color: #191922; }
+::selection { background: var(--accent); color: #191922; }
 
 /* ---------- background: paper with very fine dots ---------- */
 .ambient {
@@ -87,7 +90,7 @@ html, body {
   z-index: -1;
   background:
     radial-gradient(circle, var(--dot) 1px, transparent 1.4px) 0 0 / 26px 26px,
-    var(--bone);
+    var(--bg);
 }
 
 /* ---------- page layout ---------- */
@@ -113,7 +116,7 @@ header.site {
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--text);
   text-decoration: none;
 }
 
@@ -122,8 +125,8 @@ header.site {
   place-items: center;
   width: 36px;
   height: 36px;
-  background: var(--ultra);
-  color: var(--bone);
+  background: var(--primary);
+  color: var(--bg);
   border: var(--border);
   box-shadow: var(--shadow-sm);
   font-family: var(--display);
@@ -135,7 +138,7 @@ header.site {
 .hint {
   font-family: var(--mono);
   font-size: 12.5px;
-  color: var(--ink-soft);
+  color: var(--text-soft);
 }
 
 /* ---------- hero ---------- */
@@ -150,7 +153,7 @@ header.site {
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--ultra);
+  color: var(--primary);
   margin-bottom: 24px;
 }
 
@@ -158,7 +161,7 @@ header.site {
   content: "";
   width: 10px;
   height: 10px;
-  background: var(--ultra);
+  background: var(--primary);
 }
 
 .hero h1 {
@@ -167,12 +170,12 @@ header.site {
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.1;
-  color: var(--ink);
+  color: var(--text);
 }
 
 /* marker-style underline — gold used surgically */
 .hero h1 .hl {
-  background: linear-gradient(transparent 64%, var(--gold) 64%);
+  background: linear-gradient(transparent 64%, var(--accent) 64%);
   padding: 0 4px;
 }
 
@@ -181,7 +184,7 @@ header.site {
   max-width: 580px;
   font-size: 18px;
   line-height: 1.65;
-  color: var(--ink-soft);
+  color: var(--text-soft);
 }
 
 /* ---------- presentations grid ---------- */
@@ -198,26 +201,26 @@ header.site {
   flex-direction: column;
   gap: 14px;
   padding: 28px 28px 24px;
-  /* faint wash of the deck's accent over the surface — blended with --paper so
+  /* faint wash of the deck's accent over the surface — blended with --surface so
      it adapts to light/dark automatically */
-  background: color-mix(in srgb, var(--a, var(--ultra)) 5%, var(--paper));
+  background: color-mix(in srgb, var(--a, var(--primary)) 5%, var(--surface));
   border: var(--border);
-  border-top: 4px solid var(--a, var(--ultra));
+  border-top: 4px solid var(--a, var(--primary));
   border-radius: var(--r);
   box-shadow: var(--shadow);
   text-decoration: none;
-  color: var(--ink);
+  color: var(--text);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .deck-card:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 7px 7px 0 var(--ink);
+  box-shadow: 7px 7px 0 var(--text);
 }
 
 .deck-card:active {
   transform: translate(1px, 1px);
-  box-shadow: 3px 3px 0 var(--ink);
+  box-shadow: 3px 3px 0 var(--text);
 }
 
 .deck-card .meta {
@@ -226,7 +229,7 @@ header.site {
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--a, var(--ultra));
+  color: var(--a, var(--primary));
 }
 
 .deck-card h2 {
@@ -240,7 +243,7 @@ header.site {
 .deck-card p {
   font-size: 15px;
   line-height: 1.6;
-  color: var(--ink-soft);
+  color: var(--text-soft);
   flex: 1;
 }
 
@@ -250,7 +253,7 @@ header.site {
   justify-content: space-between;
   margin-top: 6px;
   padding-top: 16px;
-  border-top: 1px solid var(--line-mid);
+  border-top: 1px solid var(--line);
 }
 
 .deck-card .tags {
@@ -263,17 +266,17 @@ header.site {
   font-family: var(--mono);
   font-size: 11px;
   font-weight: 500;
-  color: var(--ink-soft);
+  color: var(--text-soft);
   padding: 3px 10px;
-  border: 1px solid var(--line-mid);
-  background: var(--bone);
+  border: 1px solid var(--line);
+  background: var(--bg);
 }
 
 .deck-card .go {
   font-family: var(--mono);
   font-size: 13px;
   font-weight: 600;
-  color: var(--ultra);
+  color: var(--primary);
   white-space: nowrap;
   transition: transform 0.15s ease;
 }
@@ -294,21 +297,34 @@ header.site {
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--text);
 }
 
 .collection-title::before {
   content: "";
   width: 10px;
   height: 10px;
-  background: var(--gold);
+  background: var(--accent);
 }
 
 .collection-title::after {
   content: "";
   flex: 1;
   height: 1px;
-  background: var(--line-mid);
+  background: var(--line);
+}
+
+/* presentation count next to a collection title */
+.collection-count {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: none;
+  color: var(--text-soft);
+  padding: 3px 9px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  white-space: nowrap;
 }
 
 .collection-desc {
@@ -316,26 +332,26 @@ header.site {
   max-width: 580px;
   font-size: 15px;
   line-height: 1.6;
-  color: var(--ink-soft);
+  color: var(--text-soft);
 }
 
 .collection .decks { padding: 24px 0 0; }
 
-/* accents — legacy names mapped onto the theme palette */
-[data-accent="teal"]    { --a: var(--azure); }
-[data-accent="indigo"]  { --a: var(--ultra); }
-[data-accent="violet"]  { --a: var(--plum); }
-[data-accent="amber"]   { --a: var(--gold); }
-[data-accent="rose"]    { --a: var(--coral); }
-[data-accent="emerald"] { --a: var(--green); }
-[data-accent="sky"]     { --a: var(--sky); }
+/* accent palette names — selectable per deck/slide via `accent` */
+[data-accent="primary"] { --a: var(--primary); }
+[data-accent="gold"]    { --a: var(--accent); }
+[data-accent="blue"]    { --a: var(--swatch-blue); }
+[data-accent="red"]     { --a: var(--swatch-red); }
+[data-accent="green"]   { --a: var(--swatch-green); }
+[data-accent="purple"]  { --a: var(--swatch-purple); }
+[data-accent="sky"]     { --a: var(--swatch-sky); }
 
 /* ---------- error panel ---------- */
 .error-panel {
   margin: 60px auto;
   max-width: 640px;
   padding: 36px 40px;
-  background: var(--paper);
+  background: var(--surface);
   border: var(--border);
   border-radius: var(--r);
   box-shadow: var(--shadow);
@@ -346,16 +362,16 @@ header.site {
   font-size: 21px;
   font-weight: 800;
   margin-bottom: 14px;
-  color: var(--coral);
+  color: var(--swatch-red);
 }
-.error-panel p { color: var(--ink-soft); line-height: 1.7; margin-bottom: 10px; }
+.error-panel p { color: var(--text-soft); line-height: 1.7; margin-bottom: 10px; }
 
 .error-panel code {
   display: block;
   margin: 14px 0;
   padding: 14px 18px;
   background: var(--code-bg);
-  color: var(--gold);
+  color: var(--accent);
   border-radius: var(--r);
   font-family: var(--mono);
   font-size: 14px;
@@ -365,8 +381,8 @@ footer.site {
   padding: 28px 0 50px;
   font-family: var(--mono);
   font-size: 12.5px;
-  color: var(--ink-soft);
-  border-top: 1px solid var(--line-mid);
+  color: var(--text-soft);
+  border-top: 1px solid var(--line);
 }
 
 /* ---------- theme button (home page) ---------- */
@@ -376,8 +392,8 @@ footer.site {
   height: 36px;
   display: grid;
   place-items: center;
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--surface);
+  color: var(--text);
   border: var(--border);
   box-shadow: var(--shadow-sm);
   font-size: 15px;

@@ -3,15 +3,15 @@
 ## One bottle, many jobs
 
 ::: grid 3
-::: card emerald
+::: card green
 ### Finishing
 A drizzle over soup, salad or grilled bread — where extra virgin shines brightest.
 :::
-::: card amber
+::: card gold
 ### Cooking
 Perfectly fine for sautéing and roasting; the smoke point myth is mostly that — a myth.
 :::
-::: card teal
+::: card blue
 ### Pairing
 Bread, tomatoes, cheese, citrus, even vanilla ice cream (trust us, or don't).
 :::

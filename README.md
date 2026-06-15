@@ -119,7 +119,7 @@ Alternatives to the CDN: include this repo as a **git submodule** (relative refe
 {
   "title": "Introduction to Git",
   "description": "Version control for beginners.",
-  "accent": "violet",
+  "accent": "purple",
   "tags": ["Git", "Course"],
   "slides": ["01-title.md", "02-concepts.md", "03-final.md"]
 }
@@ -139,7 +139,7 @@ On the home page each deck appears as a **card** built entirely from `presentati
 - `tags` — the chips along the bottom;
 - the slide count (`Presentation · N slides`, from `slides.length`) and an *Open →* link.
 
-The card also adopts the deck's identity so the library previews each presentation's look: its `accent` (the stripe/label color) and, if present, the `theme`'s `ultra`/`gold` colors and `fonts` (see [Theming](#theming-colors--fonts)). It deliberately keeps the home page's own `paper`/`bone`/`ink`, so dark mode stays consistent across cards.
+The card also adopts the deck's identity so the library previews each presentation's look: its `accent` (the stripe/label color) and, if present, the `theme`'s `primary`/`accent` colors and `fonts` (see [Theming](#theming-colors--fonts)). It deliberately keeps the home page's own `surface`/`bg`/`text`, so dark mode stays consistent across cards.
 
 So to control how a deck looks in the list, edit those `presentation.json` fields — the title slide (`01-…md`) is independent.
 
@@ -177,11 +177,11 @@ The whole look is driven by CSS custom properties, so a deck can rebrand itself 
   "accent": "#c0392b",
   "theme": {
     "colors": {
-      "ultra": "#c0392b",
-      "gold":  "#e0a800",
-      "bone":  "#faf7f0",
-      "paper": "#ffffff",
-      "ink":   "#1a1a1a"
+      "primary": "#c0392b",
+      "accent":  "#e0a800",
+      "bg":  "#faf7f0",
+      "surface": "#ffffff",
+      "text":   "#1a1a1a"
     },
     "fonts": {
       "display": "Fraunces",
@@ -196,13 +196,13 @@ The whole look is driven by CSS custom properties, so a deck can rebrand itself 
 
 How it works:
 
-- **`colors`** — each key maps directly to a CSS variable `--<key>` (see `:root` in `assets/style.css`). The most useful keys: `ultra` (primary — titles, links, default accent), `gold` (underlines, text selection), `bone` (page background), `paper` (cards/surfaces), `ink` (text). Others: `ink-soft`, `muted`, `azure`, `coral`, `green`, `plum`, `sky`, `code-bg`, `title-bg`.
+- **`colors`** — each key maps directly to a CSS variable `--<key>` (see `:root` in `assets/style.css`). The most useful keys: `primary` (titles, links, default accent), `accent` (underlines, text selection), `bg` (page background), `surface` (cards/surfaces), `text` (body text). Others: `text-soft`, `text-muted`, `line`, `line-soft`, `swatch-blue`, `swatch-red`, `swatch-green`, `swatch-purple`, `swatch-sky`, `code-bg`, `title-bg`.
 - **`fonts`** — `display` (headings), `sans` (body), `mono` (code). A bare name is wrapped with sensible fallbacks; you can also pass a full font stack.
 - **`googleFonts`** — optional; the part after `family=` in a [Google Fonts](https://fonts.google.com/) URL. It's loaded automatically. If you self-host or use system fonts, omit it.
 - Overrides apply via an injected `:root` rule, so the built-in **dark theme (`D` key) keeps working** — `html.dark` stays more specific for the colors it redefines.
-- The **home page previews each deck's theme**: a deck's card adopts its accent, primary/gold colors and fonts, so the library shows each presentation in its own identity.
+- The **home page previews each deck's theme**: a deck's card adopts its accent, primary/accent colors and fonts, so the library shows each presentation in its own identity.
 
-**Accent as a free value** — `accent` (in `presentation.json` or per-slide frontmatter) accepts either a palette name (`teal | indigo | violet | amber | rose | emerald | sky`) **or** a literal color: `#c0392b`, `rgb(...)`, `hsl(...)`, `var(--gold)`.
+**Accent as a free value** — `accent` (in `presentation.json` or per-slide frontmatter) accepts either a palette name (`primary | gold | blue | red | green | purple | sky`) **or** a literal color: `#c0392b`, `rgb(...)`, `hsl(...)`, `var(--accent)`.
 
 ### Ready-made themes
 
@@ -213,7 +213,7 @@ Drop the `theme` block (and matching `accent`) from any of these into your `pres
 ```json
 "accent": "#b8302a",
 "theme": {
-  "colors": { "ultra": "#b8302a", "gold": "#d99000", "bone": "#faf6f0", "ink": "#211a18" },
+  "colors": { "primary": "#b8302a", "accent": "#d99000", "bg": "#faf6f0", "text": "#211a18" },
   "fonts":  { "display": "Fraunces", "sans": "Inter" },
   "googleFonts": "Fraunces:wght@700;900&family=Inter:wght@400;600"
 }
@@ -224,7 +224,7 @@ Drop the `theme` block (and matching `accent`) from any of these into your `pres
 ```json
 "accent": "#1f7a4d",
 "theme": {
-  "colors": { "ultra": "#1f7a4d", "gold": "#caa23a", "bone": "#f3f1e7", "paper": "#fffdf6", "ink": "#1b231d" },
+  "colors": { "primary": "#1f7a4d", "accent": "#caa23a", "bg": "#f3f1e7", "surface": "#fffdf6", "text": "#1b231d" },
   "fonts":  { "display": "Bricolage Grotesque", "sans": "Inter" },
   "googleFonts": "Bricolage+Grotesque:wght@700;800&family=Inter:wght@400;600"
 }
@@ -235,7 +235,7 @@ Drop the `theme` block (and matching `accent`) from any of these into your `pres
 ```json
 "accent": "#2b6cb0",
 "theme": {
-  "colors": { "ultra": "#2b6cb0", "gold": "#3aa0a0", "bone": "#f4f6f9", "paper": "#ffffff", "ink": "#1a2230" },
+  "colors": { "primary": "#2b6cb0", "accent": "#3aa0a0", "bg": "#f4f6f9", "surface": "#ffffff", "text": "#1a2230" },
   "fonts":  { "display": "Manrope", "sans": "Manrope", "mono": "JetBrains Mono" },
   "googleFonts": "Manrope:wght@400;600;800&family=JetBrains+Mono:wght@400;500"
 }
@@ -246,7 +246,7 @@ Drop the `theme` block (and matching `accent`) from any of these into your `pres
 ```json
 "accent": "#e8590c",
 "theme": {
-  "colors": { "ultra": "#e8590c", "gold": "#d6336c", "bone": "#fbf3ec", "ink": "#241a17" },
+  "colors": { "primary": "#e8590c", "accent": "#d6336c", "bg": "#fbf3ec", "text": "#241a17" },
   "fonts":  { "display": "Space Grotesk", "sans": "Space Grotesk" },
   "googleFonts": "Space+Grotesk:wght@400;500;700"
 }
@@ -257,7 +257,7 @@ Drop the `theme` block (and matching `accent`) from any of these into your `pres
 ```json
 "accent": "#111111",
 "theme": {
-  "colors": { "ultra": "#111111", "gold": "#111111", "bone": "#ffffff", "paper": "#ffffff", "ink": "#0a0a0a" },
+  "colors": { "primary": "#111111", "accent": "#111111", "bg": "#ffffff", "surface": "#ffffff", "text": "#0a0a0a" },
   "fonts":  { "display": "Archivo", "sans": "Inter", "mono": "IBM Plex Mono" },
   "googleFonts": "Archivo:wght@800;900&family=Inter:wght@400;600&family=IBM+Plex+Mono:wght@400;500"
 }
@@ -272,7 +272,7 @@ A slide = one Markdown file, optionally with frontmatter:
 ```markdown
 ---
 layout: title        # title | section | center | default | quote | full-image | end
-accent: indigo       # palette name OR a literal color (#c0392b, rgb(), hsl(), var(--gold))
+accent: primary      # palette name OR a literal color (#c0392b, rgb(), hsl(), var(--accent))
 image: cover.jpg     # only for layout: full-image (path relative to the deck folder)
 ---
 
@@ -306,15 +306,15 @@ The usual languages ship with highlight.js (sql, js/ts, python, bash, json, html
 
 ```markdown
 ::: grid 3
-::: card teal
+::: card blue
 ### Card title
 Card content.
 :::
-::: card indigo
+::: card primary
 ### Another card
 - lists work too
 :::
-::: stat violet
+::: stat purple
 ## 250+
 The stat label
 :::

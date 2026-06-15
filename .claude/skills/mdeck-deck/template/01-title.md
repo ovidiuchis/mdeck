@@ -1,6 +1,6 @@
 ---
 layout: title
-accent: indigo
+accent: primary
 ---
 
 ###### Eyebrow label

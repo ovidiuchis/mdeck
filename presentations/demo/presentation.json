@@ -1,7 +1,7 @@
 {
   "title": "MDECK — demo",
   "description": "Demo presentation: Markdown syntax, layouts, components, icons, diagrams and math.",
-  "accent": "indigo",
+  "accent": "primary",
   "tags": ["Demo", "Markdown"],
   "slides": [
     "01-title.md",

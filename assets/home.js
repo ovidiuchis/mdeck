@@ -45,6 +45,8 @@
   const STR = Object.assign(
     {
       cardMeta: "Presentation &middot; {n} slides",
+      collectionCount: "{n} presentations",
+      collectionCountOne: "1 presentation",
       open: "Open",
       listErrorTitle: "Couldn't load the presentation list",
       fileProtocol:
@@ -122,18 +124,18 @@
     };
 
     /* Reflect each deck's theme on its card: free-form or named accent, the
-       theme's primary/gold, and its fonts — so the card's stripe, label, title
+       theme's primary/accent, and its fonts — so the card's stripe, label, title
        and "open" link carry the deck's identity. We deliberately do NOT override
-       paper/bone/ink here, so the home page's dark mode keeps working. */
+       surface/bg/text here, so the home page's dark mode keeps working. */
     function applyCardTheme(el, meta) {
       const accent = meta.accent;
       if (accent && (accent.charAt(0) === "#" || /^(rgb|hsl|var\()/i.test(accent)))
         el.style.setProperty("--a", accent);
-      else el.dataset.accent = accent || "teal";
+      else el.dataset.accent = accent || "primary";
       const theme = meta.theme || {};
       const colors = theme.colors || {};
-      if (colors.ultra) el.style.setProperty("--ultra", colors.ultra);
-      if (colors.gold) el.style.setProperty("--gold", colors.gold);
+      if (colors.primary) el.style.setProperty("--primary", colors.primary);
+      if (colors.accent) el.style.setProperty("--accent", colors.accent);
       loadFonts(theme.googleFonts);
       for (const [k, v] of Object.entries(theme.fonts || {}))
         if (typeof v === "string")
@@ -172,8 +174,13 @@
       if (grouped) {
         const sec = document.createElement("section");
         sec.className = "collection";
+        const countLabel =
+          items.length === 1 ? STR.collectionCountOne : STR.collectionCount.replace("{n}", items.length);
         sec.innerHTML =
-          (col.title ? '<h2 class="collection-title">' + col.title + "</h2>" : "") +
+          (col.title
+            ? '<h2 class="collection-title">' + col.title +
+              '<span class="collection-count">' + countLabel + "</span></h2>"
+            : "") +
           (col.description ? '<p class="collection-desc">' + col.description + "</p>" : "");
         grid = document.createElement("div");
         grid.className = "decks";

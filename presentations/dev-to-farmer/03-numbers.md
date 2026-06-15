@@ -3,15 +3,15 @@
 ## The metrics speak for themselves
 
 ::: grid 3
-::: stat amber
+::: stat gold
 ## 0
 daily standups (the cows refuse to estimate)
 :::
-::: stat emerald
+::: stat green
 ## 100%
 organic, free-range bugs — and they pollinate
 :::
-::: stat teal
+::: stat blue
 ## 1
 deploy per year, and it's called "the harvest"
 :::

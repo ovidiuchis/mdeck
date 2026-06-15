@@ -1,6 +1,6 @@
 ---
 layout: section
-accent: amber
+accent: gold
 ---
 
 ###### The takeaway

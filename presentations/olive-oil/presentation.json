@@ -5,11 +5,11 @@
   "tags": ["Demo", "Food"],
   "theme": {
     "colors": {
-      "ultra": "#5e6e23",
-      "gold":  "#c8a02c",
-      "bone":  "#f6f3e7",
-      "paper": "#fffdf3",
-      "ink":   "#2a2c1c"
+      "primary": "#5e6e23",
+      "accent":  "#c8a02c",
+      "bg":      "#f6f3e7",
+      "surface": "#fffdf3",
+      "text":    "#2a2c1c"
     },
     "fonts": {
       "display": "Fraunces",

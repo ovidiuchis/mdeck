@@ -1,6 +1,6 @@
 ---
 layout: section
-accent: emerald
+accent: green
 ---
 
 ###### The takeaway

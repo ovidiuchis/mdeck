@@ -30,22 +30,22 @@ A ready-to-copy starter is in this skill's `template/` folder — copy it into `
 {
   "title": "Introduction to Git",
   "description": "Version control for beginners.",
-  "accent": "violet",
+  "accent": "purple",
   "tags": ["Git", "Course"],
   "slides": ["01-title.md", "02-concepts.md", "03-final.md"]
 }
 ```
 
-`slides` is the ordered list of files to load — it is the source of truth for order, not the filenames. `accent` is the deck-wide default accent; individual slides can override it. `accent` accepts a palette name (`teal | indigo | violet | amber | rose | emerald | sky`) **or** a literal color (`#c0392b`, `rgb(...)`, `hsl(...)`, `var(--gold)`).
+`slides` is the ordered list of files to load — it is the source of truth for order, not the filenames. `accent` is the deck-wide default accent; individual slides can override it. `accent` accepts a palette name (`primary | gold | blue | red | green | purple | sky`) **or** a literal color (`#c0392b`, `rgb(...)`, `hsl(...)`, `var(--accent)`).
 
 **The home-page card.** On the home page each deck is shown as a card built from `presentation.json` — **not** from the first slide. The card uses `title`, `description` (with `subtitle` as a fallback if there's no `description`), `tags`, and the slide count, and adopts the deck's `accent`/`theme` colors and fonts so the library previews its look. To change how a deck appears in the list, edit those fields — the `title` slide is independent of the card.
 
-**Theming (colors & fonts).** To rebrand a deck without touching the engine, add an optional `theme` block to `presentation.json`. `colors` keys map to CSS variables `--<key>` (`ultra` = primary, `gold`, `bone` = bg, `paper` = surfaces, `ink` = text); `fonts` has `display`/`sans`/`mono`; `googleFonts` (the part after `family=` in a Google Fonts URL) is auto-loaded. Dark mode (`D`) keeps working. The engine README lists 5 ready-made themes (Crimson, Forest, Slate, Sunset, Mono).
+**Theming (colors & fonts).** To rebrand a deck without touching the engine, add an optional `theme` block to `presentation.json`. `colors` keys map to CSS variables `--<key>` (`primary`, `accent`, `bg`, `surface`, `text`, plus `text-soft`/`text-muted`/`line`/`swatch-*`); `fonts` has `display`/`sans`/`mono`; `googleFonts` (the part after `family=` in a Google Fonts URL) is auto-loaded. Dark mode (`D`) keeps working. The engine README lists 5 ready-made themes (Crimson, Forest, Slate, Sunset, Mono).
 
 ```json
 "accent": "#c0392b",
 "theme": {
-  "colors": { "ultra": "#c0392b", "gold": "#e0a800", "bone": "#faf6f0", "ink": "#211a18" },
+  "colors": { "primary": "#c0392b", "accent": "#e0a800", "bg": "#faf6f0", "text": "#211a18" },
   "fonts":  { "display": "Fraunces", "sans": "Inter" },
   "googleFonts": "Fraunces:wght@700;900&family=Inter:wght@400;600"
 }
@@ -69,7 +69,7 @@ Optional YAML-ish block at the very top of a slide file:
 ```markdown
 ---
 layout: title        # see layouts below (omit for the default body layout)
-accent: indigo       # teal | indigo | violet | amber | rose | emerald | sky
+accent: primary       # primary | gold | blue | red | green | purple | sky
 image: cover.jpg     # only for layout: full-image — path relative to the deck folder, or a full URL
 ---
 ```
@@ -104,11 +104,11 @@ Open with `::: <kind> [arg]`, close with a bare `:::`. They nest. Empty `:::` cl
 
 ```markdown
 ::: grid 3
-::: card teal
+::: card blue
 ### Card title
 Content — lists work too.
 :::
-::: stat violet
+::: stat purple
 ## 250+
 Label under the number
 :::
@@ -128,7 +128,7 @@ Label under the number
 | `steps` | Numbered step cards side by side, built from an ordered (`1.`) list. |
 | `callout info` / `tip` / `ok` / `warn` | Colored note box with an icon (blue / violet / green / red). |
 
-Accents available everywhere: `teal`, `indigo`, `violet`, `amber`, `rose`, `emerald`, `sky`.
+Accents available everywhere: `primary`, `gold`, `blue`, `red`, `green`, `purple`, `sky`.
 
 ## Inline extras
 

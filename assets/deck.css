@@ -36,7 +36,7 @@ html, body {
   flex-direction: column;
   background:
     radial-gradient(circle, var(--dot) 1px, transparent 1.4px) 0 0 / 26px 26px,
-    var(--bone);
+    var(--bg);
   opacity: 0;
   visibility: hidden;
   transform: translateX(18px);
@@ -69,7 +69,7 @@ html, body {
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--text-soft);
   margin-bottom: 22px;
 }
 
@@ -77,7 +77,7 @@ html, body {
   content: "";
   width: 11px;
   height: 11px;
-  background: var(--a, var(--ultra));
+  background: var(--a, var(--primary));
 }
 
 .slide h1 {
@@ -103,7 +103,7 @@ html, body {
   width: 64px;
   height: 6px;
   margin-top: 16px;
-  background: var(--a, var(--ultra));
+  background: var(--a, var(--primary));
 }
 
 .slide h3 {
@@ -116,19 +116,19 @@ html, body {
 .slide p {
   font-size: 21px;
   line-height: 1.6;
-  color: var(--ink-soft);
+  color: var(--text-soft);
   margin: 12px 0;
   max-width: 980px;
 }
 
-.slide strong { color: var(--ink); font-weight: 700; }
-.slide em     { color: var(--ink); }
+.slide strong { color: var(--text); font-weight: 700; }
+.slide em     { color: var(--text); }
 
 .slide a {
-  color: var(--ultra);
+  color: var(--primary);
   font-weight: 600;
   text-decoration: none;
-  border-bottom: 2px solid var(--gold);
+  border-bottom: 2px solid var(--accent);
 }
 
 .slide ul, .slide ol {
@@ -142,7 +142,7 @@ html, body {
 .slide li {
   font-size: 20px;
   line-height: 1.55;
-  color: var(--ink-soft);
+  color: var(--text-soft);
 }
 
 .slide ul { list-style: none; padding-left: 6px; }
@@ -159,11 +159,11 @@ html, body {
   top: 0.5em;
   width: 9px;
   height: 9px;
-  background: var(--a, var(--ultra));
+  background: var(--a, var(--primary));
 }
 
 .slide ol li::marker {
-  color: var(--a, var(--ultra));
+  color: var(--a, var(--primary));
   font-family: var(--mono);
   font-weight: 600;
 }
@@ -178,28 +178,28 @@ html, body {
   width: 7px;
   height: 7px;
   background: transparent;
-  border: 2px solid var(--a, var(--ultra));
+  border: 2px solid var(--a, var(--primary));
 }
 
 .slide blockquote {
   margin: 20px 0;
   padding: 18px 26px;
-  background: var(--paper);
-  border: 1px solid var(--line-mid);
-  border-left: 6px solid var(--a, var(--ultra));
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 6px solid var(--a, var(--primary));
   box-shadow: var(--shadow-sm);
 }
 
 .slide blockquote p {
   font-size: 22px;
   font-style: italic;
-  color: var(--ink);
+  color: var(--text);
   margin: 0;
 }
 
 .slide hr {
   border: none;
-  border-top: 2px solid var(--ink);
+  border-top: 2px solid var(--text);
   margin: 22px 0;
 }
 
@@ -216,7 +216,7 @@ html, body {
   background: rgba(32, 51, 196, 0.07);
   border: 1px solid rgba(32, 51, 196, 0.35);
   padding: 1px 7px;
-  color: var(--ultra-deep);
+  color: var(--primary-deep);
   font-weight: 500;
 }
 
@@ -266,7 +266,7 @@ html.dark .slide code {
   margin: 18px 0;
   border-collapse: separate;
   border-spacing: 0;
-  background: var(--paper);
+  background: var(--surface);
   border: var(--border);
   box-shadow: var(--shadow);
   font-size: 19px;
@@ -279,14 +279,14 @@ html.dark .slide code {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-align: left;
-  color: var(--bone);
-  background: var(--ultra-deep);
+  color: var(--bg);
+  background: var(--primary-deep);
   padding: 11px 20px;
 }
 
 .slide td {
   padding: 10px 20px;
-  color: var(--ink-soft);
+  color: var(--text-soft);
   border-bottom: 1px solid var(--line-soft);
 }
 
@@ -307,16 +307,16 @@ html.dark .slide code {
 
 .slide .card {
   padding: 20px 22px;
-  background: var(--paper);
+  background: var(--surface);
   border: var(--border);
-  border-top: 4px solid var(--a, var(--ultra));
+  border-top: 4px solid var(--a, var(--primary));
   border-radius: var(--r);
   box-shadow: var(--shadow-sm);
 }
 
 .slide .card h3 {
   font-size: 20px;
-  color: var(--ink);
+  color: var(--text);
 }
 
 .slide .card p, .slide .card li { font-size: 17.5px; line-height: 1.55; }
@@ -328,9 +328,9 @@ html.dark .slide code {
 /* big statistics */
 .slide .stat {
   padding: 22px 24px;
-  background: var(--paper);
+  background: var(--surface);
   border: var(--border);
-  border-top: 4px solid var(--a, var(--ultra));
+  border-top: 4px solid var(--a, var(--primary));
   border-radius: var(--r);
   box-shadow: var(--shadow-sm);
 }
@@ -340,7 +340,7 @@ html.dark .slide code {
   font-size: 52px;
   font-weight: 800;
   margin: 0;
-  color: var(--a, var(--ultra));
+  color: var(--a, var(--primary));
 }
 
 .slide .stat h2::after { display: none; }
@@ -351,7 +351,7 @@ html.dark .slide code {
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--text-soft);
   margin: 10px 0 0;
 }
 
@@ -376,7 +376,7 @@ html.dark .slide code {
 /* ---------- columns (flowing text) ---------- */
 .slide .columns {
   column-gap: 40px;
-  column-rule: 1px solid var(--line-mid);
+  column-rule: 1px solid var(--line);
   margin: 18px 0;
 }
 .slide .columns > *:first-child { margin-top: 0; }
@@ -399,7 +399,7 @@ html.dark .slide code {
   top: 8px;
   bottom: 8px;
   width: 2px;
-  background: var(--line-mid);
+  background: var(--line);
 }
 .slide .timeline > ul > li, .slide .timeline > ol > li {
   position: relative;
@@ -413,10 +413,10 @@ html.dark .slide code {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: var(--paper);
-  border: 3px solid var(--a, var(--ultra));
+  background: var(--surface);
+  border: 3px solid var(--a, var(--primary));
 }
-.slide .timeline li strong { display: inline; color: var(--ink); }
+.slide .timeline li strong { display: inline; color: var(--text); }
 
 /* ---------- steps (numbered steps, horizontal) ---------- */
 .slide .steps ol {
@@ -431,9 +431,9 @@ html.dark .slide code {
   counter-increment: step;
   flex: 1;
   padding: 18px 20px 20px;
-  background: var(--paper);
+  background: var(--surface);
   border: var(--border);
-  border-top: 4px solid var(--a, var(--ultra));
+  border-top: 4px solid var(--a, var(--primary));
   border-radius: var(--r);
   box-shadow: var(--shadow-sm);
   font-size: 17.5px;
@@ -449,19 +449,19 @@ html.dark .slide code {
   font-family: var(--display);
   font-weight: 800;
   font-size: 18px;
-  color: var(--bone);
-  background: var(--a, var(--ultra));
+  color: var(--bg);
+  background: var(--a, var(--primary));
 }
-.slide .steps ol > li strong { color: var(--ink); }
+.slide .steps ol > li strong { color: var(--text); }
 
 /* ---------- callout (note box) ---------- */
 .slide .callout {
   position: relative;
   margin: 18px 0;
   padding: 16px 22px 16px 62px;
-  background: var(--paper);
+  background: var(--surface);
   border: var(--border);
-  border-left: 6px solid var(--cc, var(--ultra));
+  border-left: 6px solid var(--cc, var(--primary));
   box-shadow: var(--shadow-sm);
 }
 .slide .callout::before {
@@ -475,20 +475,20 @@ html.dark .slide code {
   font-family: var(--display);
   font-weight: 800;
   font-size: 18px;
-  color: var(--bone);
-  background: var(--cc, var(--ultra));
+  color: var(--bg);
+  background: var(--cc, var(--primary));
   border-radius: 50%;
 }
 .slide .callout > * { margin: 0; }
 .slide .callout > * + * { margin-top: 8px; }
 .slide .callout p, .slide .callout li { font-size: 18px; }
-.slide .callout-info { --cc: var(--azure); }
+.slide .callout-info { --cc: var(--swatch-blue); }
 .slide .callout-info::before { content: "i"; }
-.slide .callout-tip  { --cc: var(--plum); }
+.slide .callout-tip  { --cc: var(--swatch-purple); }
 .slide .callout-tip::before  { content: "\2605"; } /* ★ */
-.slide .callout-ok   { --cc: var(--green); }
+.slide .callout-ok   { --cc: var(--swatch-green); }
 .slide .callout-ok::before   { content: "\2713"; } /* ✓ */
-.slide .callout-warn { --cc: var(--coral); }
+.slide .callout-warn { --cc: var(--swatch-red); }
 .slide .callout-warn::before { content: "!"; }
 
 /* ---------- inline icons ---------- */
@@ -500,7 +500,7 @@ html.dark .slide code {
 .slide .icon svg {
   width: 1.1em;
   height: 1.1em;
-  color: var(--a, var(--ultra));
+  color: var(--a, var(--primary));
 }
 
 /* ---------- keys [[ ]] → kbd ---------- */
@@ -509,11 +509,11 @@ html.dark .slide code {
   font-size: 0.82em;
   font-weight: 600;
   padding: 2px 9px;
-  color: var(--ink);
-  background: var(--paper);
-  border: 2px solid var(--ink);
+  color: var(--text);
+  background: var(--surface);
+  border: 2px solid var(--text);
   border-radius: 5px;
-  box-shadow: 2px 2px 0 var(--ink);
+  box-shadow: 2px 2px 0 var(--text);
   white-space: nowrap;
 }
 
@@ -548,13 +548,13 @@ html.dark .slide code {
 }
 
 .layout-title h6::before, .layout-section h6::before {
-  background: var(--gold);
+  background: var(--accent);
 }
 
 .layout-title h1 {
   font-size: 80px;
   max-width: 1060px;
-  color: var(--bone);
+  color: var(--bg);
 }
 
 .layout-title > p:first-of-type {
@@ -565,13 +565,13 @@ html.dark .slide code {
 }
 
 .layout-title p, .layout-section p { color: rgba(245, 242, 233, 0.85); }
-.layout-title strong, .layout-section strong { color: var(--gold); }
+.layout-title strong, .layout-section strong { color: var(--accent); }
 
 /* section slide */
 .layout-section h1 {
   font-size: 66px;
   max-width: 1000px;
-  color: var(--bone);
+  color: var(--bg);
 }
 
 .layout-section h1::before {
@@ -580,7 +580,7 @@ html.dark .slide code {
   width: 96px;
   height: 8px;
   margin-bottom: 32px;
-  background: var(--gold);
+  background: var(--accent);
 }
 
 .layout-section p { font-size: 23px; margin-top: 22px; }
@@ -611,7 +611,7 @@ html.dark .slide code {
 }
 .layout-full-image { justify-content: flex-end; }
 .layout-full-image h6 { color: rgba(255, 255, 255, 0.82); }
-.layout-full-image h6::before { background: var(--gold); }
+.layout-full-image h6::before { background: var(--accent); }
 .layout-full-image h1 {
   color: #fff;
   font-size: 74px;
@@ -620,7 +620,7 @@ html.dark .slide code {
 }
 .layout-full-image h2 { color: #fff; }
 .layout-full-image p { color: rgba(255, 255, 255, 0.9); max-width: 900px; }
-.layout-full-image strong { color: var(--gold); }
+.layout-full-image strong { color: var(--accent); }
 .layout-full-image a { color: #fff; }
 
 /* ---------- quote (impact quote) ---------- */
@@ -644,7 +644,7 @@ html.dark .slide code {
   font-weight: 800;
   font-size: 120px;
   line-height: 0.4;
-  color: var(--a, var(--ultra));
+  color: var(--a, var(--primary));
   margin-bottom: 24px;
 }
 .layout-quote blockquote p {
@@ -653,7 +653,7 @@ html.dark .slide code {
   font-style: normal;
   font-size: 44px;
   line-height: 1.24;
-  color: var(--ink);
+  color: var(--text);
 }
 .layout-quote > p {
   margin-top: 28px;
@@ -662,7 +662,7 @@ html.dark .slide code {
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--text-soft);
 }
 
 /* ---------- end / thanks (final slide on ultramarine) ---------- */
@@ -676,29 +676,29 @@ html.dark .slide code {
   align-self: center;
   color: rgba(245, 242, 233, 0.8);
 }
-.layout-end h6::before, .layout-thanks h6::before { background: var(--gold); }
+.layout-end h6::before, .layout-thanks h6::before { background: var(--accent); }
 .layout-end h1, .layout-thanks h1 {
-  color: var(--bone);
+  color: var(--bg);
   font-size: 74px;
   max-width: 1040px;
 }
-.layout-end h2, .layout-thanks h2 { color: var(--bone); }
+.layout-end h2, .layout-thanks h2 { color: var(--bg); }
 .layout-end h2::after, .layout-thanks h2::after {
   margin-left: auto;
   margin-right: auto;
-  background: var(--gold);
+  background: var(--accent);
 }
 .layout-end p, .layout-thanks p {
   margin-left: auto;
   margin-right: auto;
   color: rgba(245, 242, 233, 0.85);
 }
-.layout-end strong, .layout-thanks strong { color: var(--gold); }
+.layout-end strong, .layout-thanks strong { color: var(--accent); }
 .layout-end a, .layout-thanks a {
-  color: var(--gold);
+  color: var(--accent);
   border-bottom-color: rgba(234, 180, 56, 0.5);
 }
-.layout-end .icon svg, .layout-thanks .icon svg { color: var(--gold); }
+.layout-end .icon svg, .layout-thanks .icon svg { color: var(--accent); }
 
 /* ---------- signature (only on title and final slides) ---------- */
 .sign {
@@ -712,7 +712,7 @@ html.dark .slide code {
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.06em;
-  color: var(--ink);
+  color: var(--text);
 }
 
 .sign .monogram {
@@ -720,8 +720,8 @@ html.dark .slide code {
   place-items: center;
   width: 40px;
   height: 40px;
-  background: var(--ultra);
-  color: var(--bone);
+  background: var(--primary);
+  color: var(--bg);
   border: var(--border);
   box-shadow: var(--shadow-sm);
   font-family: var(--display);
@@ -731,9 +731,9 @@ html.dark .slide code {
 
 .layout-title .sign, .layout-section .sign { color: rgba(245, 242, 233, 0.9); }
 .layout-title .sign .monogram, .layout-section .sign .monogram {
-  background: var(--gold);
-  color: var(--ink);
-  box-shadow: 3px 3px 0 var(--ultra-deep);
+  background: var(--accent);
+  color: var(--text);
+  box-shadow: 3px 3px 0 var(--primary-deep);
 }
 
 /* ---------- chrome (outside the stage, fixed to the viewport) ---------- */
@@ -743,7 +743,7 @@ html.dark .slide code {
   height: 4px;
   width: 0;
   z-index: 50;
-  background: var(--gold);
+  background: var(--accent);
   transition: width 0.3s ease-out;
 }
 
@@ -772,18 +772,29 @@ body.hud-visible #hud { opacity: 1; }
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--text);
   text-decoration: none;
-  background: var(--paper);
+  background: var(--surface);
   border: var(--border);
   box-shadow: var(--shadow-sm);
   padding: 8px 16px;
 }
 
+#hud .chip .back {
+  font-size: 15px;
+  line-height: 1;
+  color: var(--primary);
+  transition: transform 0.12s ease;
+}
+
+#hud .chip:hover { background: var(--primary); color: var(--bg); }
+#hud .chip:hover .back { color: var(--bg); transform: translateX(-2px); }
+#hud .chip:hover .dot { background: var(--bg); }
+
 #hud .chip .dot {
   width: 9px;
   height: 9px;
-  background: var(--ultra);
+  background: var(--primary);
 }
 
 #hud .controls {
@@ -791,17 +802,18 @@ body.hud-visible #hud { opacity: 1; }
   display: flex;
   align-items: center;
   gap: 4px;
-  background: var(--paper);
+  background: var(--surface);
   border: var(--border);
   box-shadow: var(--shadow-sm);
   padding: 5px 8px;
 }
 
-#hud .controls button {
+#hud .controls button,
+#hud .controls .close {
   appearance: none;
   border: none;
   background: transparent;
-  color: var(--ink);
+  color: var(--text);
   font-family: var(--mono);
   font-size: 15px;
   font-weight: 600;
@@ -810,23 +822,36 @@ body.hud-visible #hud { opacity: 1; }
   cursor: pointer;
   display: grid;
   place-items: center;
+  text-decoration: none;
   transition: background 0.12s ease, color 0.12s ease;
 }
 
 #hud .controls button:hover {
-  background: var(--ultra);
-  color: var(--bone);
+  background: var(--primary);
+  color: var(--bg);
+}
+
+/* close = back to the library — set apart and flagged in red */
+#hud .controls .close {
+  margin-left: 4px;
+  border-left: 1px solid var(--line);
+  border-radius: 0;
+}
+
+#hud .controls .close:hover {
+  background: var(--swatch-red);
+  color: var(--bg);
 }
 
 #hud .controls #counter {
   font-family: var(--mono);
   font-size: 13px;
-  color: var(--ink-soft);
+  color: var(--text-soft);
   padding: 0 10px;
   white-space: nowrap;
 }
 
-#hud .controls #counter b { color: var(--ink); font-weight: 700; }
+#hud .controls #counter b { color: var(--text); font-weight: 700; }
 
 /* ---------- overview mode ---------- */
 #overview {
@@ -856,7 +881,7 @@ body.overview #stage-wrap { visibility: hidden; }
   border: var(--border);
   overflow: hidden;
   aspect-ratio: 16 / 9;
-  background: var(--bone);
+  background: var(--bg);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -865,7 +890,7 @@ body.overview #stage-wrap { visibility: hidden; }
   box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.55);
 }
 
-#overview .thumb.active { outline: 3px solid var(--gold); outline-offset: 2px; }
+#overview .thumb.active { outline: 3px solid var(--accent); outline-offset: 2px; }
 
 #overview .thumb .mini {
   position: absolute;
@@ -891,8 +916,8 @@ body.overview #stage-wrap { visibility: hidden; }
   font-family: var(--mono);
   font-size: 12.5px;
   font-weight: 600;
-  color: var(--bone);
-  background: var(--ink);
+  color: var(--bg);
+  background: var(--text);
   padding: 3px 10px;
 }
 
@@ -903,13 +928,13 @@ body.overview #stage-wrap { visibility: hidden; }
   z-index: 70;
   display: none;
   place-items: center;
-  background: var(--bone);
+  background: var(--bg);
   padding: 32px;
 }
 
 #deck-error.visible { display: grid; }
 
-#deck-error a { color: var(--ultra); font-weight: 600; }
+#deck-error a { color: var(--primary); font-weight: 600; }
 
 /* ---------- print / PDF export ----------
    Each slide becomes exactly one 16:9 page (1280×720), edge-to-edge,

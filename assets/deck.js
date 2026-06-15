@@ -41,11 +41,12 @@
   /* ---------- per-presentation theming (presentation.json → "theme") ----------
      Overrides the :root CSS variables without touching the engine:
        "theme": {
-         "colors":      { "ultra": "#c0392b", "gold": "#e0a800", "bone": "#faf7f0" },
+         "colors":      { "primary": "#c0392b", "accent": "#e0a800", "bg": "#faf7f0" },
          "fonts":       { "display": "Fraunces", "sans": "Inter", "mono": "JetBrains Mono" },
          "googleFonts": "Fraunces:wght@700;900&family=Inter:wght@400;600"
        }
-     Keys in "colors"/"fonts" map directly to --<key> (see style.css).
+     Keys in "colors"/"fonts" map directly to --<key> (see style.css):
+       primary, accent, bg, surface, text, text-soft, text-muted, line…
      We inject a <style>:root{…}</style>, so the html.dark rules in style.css
      stay more specific and the dark theme keeps working. */
   function applyTheme(theme) {
@@ -93,6 +94,7 @@
       navTheme: "Dark/light theme (D)",
       navPdf: "Export to PDF (P)",
       navFull: "Fullscreen (F)",
+      navClose: "Back to the library (H)",
       noDeckTitle: "No presentation specified",
       noDeckBody:
         "Open this viewer with the <code style='display:inline;padding:2px 8px'>?p=presentation-name</code> parameter, for example:",
@@ -125,7 +127,7 @@
     errorBox.innerHTML =
       '<div class="error-panel"><h2>' + title + "</h2>" +
       lines.map((l) => (l.startsWith("$") ? "<code>" + l.slice(1) + "</code>" : "<p>" + l + "</p>")).join("") +
-      '<p><a href="' + CFG.home + '" style="color:var(--teal)">&larr; ' + STR.backToList + "</a></p></div>";
+      '<p><a href="' + CFG.home + '" style="color:var(--primary)">&larr; ' + STR.backToList + "</a></p></div>";
     errorBox.classList.add("visible");
   }
 
@@ -374,6 +376,7 @@
         '<div id="stage-wrap"><div id="stage"></div></div>' +
         '<div id="hud">' +
           '<a class="chip" id="chip-home" href="' + CFG.home + '" title="' + STR.homeTitle + '">' +
+            '<span class="back">&#8592;</span>' +
             '<span class="dot"></span><span id="chip-title">' + STR.chipDefault + "</span></a>" +
           '<div class="controls">' +
             '<button id="btn-prev" title="' + STR.navPrev + '">&#8592;</button>' +
@@ -383,6 +386,7 @@
             '<button id="btn-theme" title="' + STR.navTheme + '">&#9681;</button>' +
             '<button id="btn-pdf" title="' + STR.navPdf + '">&#x2913;</button>' +
             '<button id="btn-full" title="' + STR.navFull + '">&#x26F6;</button>' +
+            '<a id="btn-close" class="close" href="' + CFG.home + '" title="' + STR.navClose + '">&#x2715;</a>' +
           "</div>" +
         "</div>" +
         '<div id="overview"></div>' +
@@ -400,6 +404,8 @@
     errorBox = document.getElementById("deck-error");
     const chipHome = document.getElementById("chip-home");
     if (chipHome) chipHome.href = CFG.home;
+    const btnClose = document.getElementById("btn-close");
+    if (btnClose) btnClose.href = CFG.home;
 
     window.addEventListener("resize", fit);
     window.addEventListener("mousemove", pokeHud);

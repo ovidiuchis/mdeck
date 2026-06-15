@@ -3,15 +3,15 @@
 ## What's actually in the bottle
 
 ::: grid 3
-::: stat emerald
+::: stat green
 ## ~73%
 monounsaturated fat — the "good" kind
 :::
-::: stat amber
+::: stat gold
 ## 30+
 polyphenols and antioxidants in extra virgin
 :::
-::: stat teal
+::: stat blue
 ## 6,000
 years of continuous production
 :::

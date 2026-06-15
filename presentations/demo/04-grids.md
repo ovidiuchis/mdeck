@@ -3,15 +3,15 @@
 ## Grids, cards and stats
 
 ::: grid 1-2
-::: stat violet
+::: stat purple
 ## 100%
 Web, no build step
 :::
-::: card teal
+::: card blue
 ### Proportional columns
 Use `grid 1-2` to make the second column twice as wide (also `1-2-1`, etc.).
 
-Card accents: `teal`, `indigo`, `violet`, `amber`, `rose`, `emerald`, `sky`. :star:
+Card accents: `primary`, `gold`, `blue`, `red`, `green`, `purple`, `sky`. :star:
 :::
 :::
 

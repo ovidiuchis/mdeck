@@ -1,6 +1,6 @@
 ---
 layout: title
-accent: amber
+accent: gold
 ---
 
 ###### Career advice nobody asked for

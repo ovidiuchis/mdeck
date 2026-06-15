@@ -5,11 +5,11 @@
   "tags": ["Demo", "Satire"],
   "theme": {
     "colors": {
-      "ultra": "#a8531e",
-      "gold":  "#d6a531",
-      "bone":  "#f7f1e3",
-      "paper": "#fffdf5",
-      "ink":   "#2b211a"
+      "primary": "#a8531e",
+      "accent":  "#d6a531",
+      "bg":      "#f7f1e3",
+      "surface": "#fffdf5",
+      "text":    "#2b211a"
     },
     "fonts": {
       "display": "Bricolage Grotesque",

@@ -1,6 +1,6 @@
 ---
 layout: title
-accent: emerald
+accent: green
 ---
 
 ###### A very serious demo

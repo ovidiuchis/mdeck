@@ -1,5 +1,5 @@
 ---
-accent: teal
+accent: blue
 ---
 
 ###### Layout · split

@@ -1,6 +1,6 @@
 ---
 layout: end
-accent: indigo
+accent: primary
 ---
 
 ###### Thank you
