@@ -5,7 +5,7 @@ Zero-build, 100% static presentation engine (HTML + CSS + JavaScript). Each pres
 - ✍️ **Write slides in plain Markdown** — one `.md` file per slide, versioned in git like the rest of your code
 - 🚀 **No build step, no dependencies to install** — markdown-it and highlight.js are vendored locally, so it works fully offline / on intranets, no CDN required
 - 🗂️ **Library home page with collections** — group decks by topic, course, or team
-- 🎨 **Opinionated, polished look** — accent colors, dark mode, layout containers (grids, cards, stats)
+- 🎨 **Opinionated, polished look — and fully themeable** — override colors & fonts per deck from `presentation.json` (see [Theming](#theming-colors--fonts)); accent colors, dark mode, layout containers (grids, cards, stats)
 - 🖥️ **Presenter-friendly** — keyboard navigation, overview grid, fullscreen, touch swipe, deep links to any slide, print-to-PDF export
 - 🔌 **Embeddable engine** — keep your content in a separate (even private) repo and load the engine from a CDN
 
@@ -132,6 +132,104 @@ Presentations can be grouped on the home page into **collections** (e.g. "Intern
 - The order of collections and of the presentations inside them is the display order.
 - The old format still works: a plain `{ "presentations": ["demo"] }` renders all cards in a single grid, without headers. The two can be combined — presentations in the flat `presentations` list are shown at the end, without a collection title.
 
+## Theming (colors & fonts)
+
+The whole look is driven by CSS custom properties, so a deck can rebrand itself **without touching the engine** — just add an optional `theme` block to its `presentation.json`:
+
+```json
+{
+  "title": "Quarterly review",
+  "accent": "#c0392b",
+  "theme": {
+    "colors": {
+      "ultra": "#c0392b",
+      "gold":  "#e0a800",
+      "bone":  "#faf7f0",
+      "paper": "#ffffff",
+      "ink":   "#1a1a1a"
+    },
+    "fonts": {
+      "display": "Fraunces",
+      "sans":    "Inter",
+      "mono":    "JetBrains Mono"
+    },
+    "googleFonts": "Fraunces:wght@700;900&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500"
+  },
+  "slides": ["01-title.md", "..."]
+}
+```
+
+How it works:
+
+- **`colors`** — each key maps directly to a CSS variable `--<key>` (see `:root` in `assets/style.css`). The most useful keys: `ultra` (primary — titles, links, default accent), `gold` (underlines, text selection), `bone` (page background), `paper` (cards/surfaces), `ink` (text). Others: `ink-soft`, `muted`, `azure`, `coral`, `green`, `plum`, `sky`, `code-bg`, `title-bg`.
+- **`fonts`** — `display` (headings), `sans` (body), `mono` (code). A bare name is wrapped with sensible fallbacks; you can also pass a full font stack.
+- **`googleFonts`** — optional; the part after `family=` in a [Google Fonts](https://fonts.google.com/) URL. It's loaded automatically. If you self-host or use system fonts, omit it.
+- Overrides apply via an injected `:root` rule, so the built-in **dark theme (`D` key) keeps working** — `html.dark` stays more specific for the colors it redefines.
+- The **home page previews each deck's theme**: a deck's card adopts its accent, primary/gold colors and fonts, so the library shows each presentation in its own identity.
+
+**Accent as a free value** — `accent` (in `presentation.json` or per-slide frontmatter) accepts either a palette name (`teal | indigo | violet | amber | rose | emerald | sky`) **or** a literal color: `#c0392b`, `rgb(...)`, `hsl(...)`, `var(--gold)`.
+
+### Ready-made themes
+
+Drop the `theme` block (and matching `accent`) from any of these into your `presentation.json`:
+
+**Crimson** — editorial red, serif headings
+
+```json
+"accent": "#b8302a",
+"theme": {
+  "colors": { "ultra": "#b8302a", "gold": "#d99000", "bone": "#faf6f0", "ink": "#211a18" },
+  "fonts":  { "display": "Fraunces", "sans": "Inter" },
+  "googleFonts": "Fraunces:wght@700;900&family=Inter:wght@400;600"
+}
+```
+
+**Forest** — deep green on warm cream
+
+```json
+"accent": "#1f7a4d",
+"theme": {
+  "colors": { "ultra": "#1f7a4d", "gold": "#caa23a", "bone": "#f3f1e7", "paper": "#fffdf6", "ink": "#1b231d" },
+  "fonts":  { "display": "Bricolage Grotesque", "sans": "Inter" },
+  "googleFonts": "Bricolage+Grotesque:wght@700;800&family=Inter:wght@400;600"
+}
+```
+
+**Slate** — calm corporate blue-grey
+
+```json
+"accent": "#2b6cb0",
+"theme": {
+  "colors": { "ultra": "#2b6cb0", "gold": "#3aa0a0", "bone": "#f4f6f9", "paper": "#ffffff", "ink": "#1a2230" },
+  "fonts":  { "display": "Manrope", "sans": "Manrope", "mono": "JetBrains Mono" },
+  "googleFonts": "Manrope:wght@400;600;800&family=JetBrains+Mono:wght@400;500"
+}
+```
+
+**Sunset** — warm orange & magenta
+
+```json
+"accent": "#e8590c",
+"theme": {
+  "colors": { "ultra": "#e8590c", "gold": "#d6336c", "bone": "#fbf3ec", "ink": "#241a17" },
+  "fonts":  { "display": "Space Grotesk", "sans": "Space Grotesk" },
+  "googleFonts": "Space+Grotesk:wght@400;500;700"
+}
+```
+
+**Mono** — high-contrast black & white, typographic
+
+```json
+"accent": "#111111",
+"theme": {
+  "colors": { "ultra": "#111111", "gold": "#111111", "bone": "#ffffff", "paper": "#ffffff", "ink": "#0a0a0a" },
+  "fonts":  { "display": "Archivo", "sans": "Inter", "mono": "IBM Plex Mono" },
+  "googleFonts": "Archivo:wght@800;900&family=Inter:wght@400;600&family=IBM+Plex+Mono:wght@400;500"
+}
+```
+
+The built-in default is **Klein** — ultramarine `#2033c4` & gold `#eab438`, with Archivo / Space Grotesk / IBM Plex Mono. Leave out the `theme` block to keep it.
+
 ## Slide syntax
 
 A slide = one Markdown file, optionally with frontmatter:
@@ -139,7 +237,7 @@ A slide = one Markdown file, optionally with frontmatter:
 ```markdown
 ---
 layout: title        # title | section | center | default | quote | full-image | end
-accent: indigo       # teal | indigo | violet | amber | rose | emerald | sky
+accent: indigo       # palette name OR a literal color (#c0392b, rgb(), hsl(), var(--gold))
 image: cover.jpg     # only for layout: full-image (path relative to the deck folder)
 ---
 

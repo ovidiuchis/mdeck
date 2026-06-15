@@ -1,8 +1,22 @@
 {
   "title": "Why olive oil is great for you",
   "description": "A lighthearted sample deck: six millennia of liquid gold in five slides.",
-  "accent": "emerald",
+  "accent": "#5e6e23",
   "tags": ["Demo", "Food"],
+  "theme": {
+    "colors": {
+      "ultra": "#5e6e23",
+      "gold":  "#c8a02c",
+      "bone":  "#f6f3e7",
+      "paper": "#fffdf3",
+      "ink":   "#2a2c1c"
+    },
+    "fonts": {
+      "display": "Fraunces",
+      "sans":    "Inter"
+    },
+    "googleFonts": "Fraunces:opsz,wght@9..144,700;9..144,900&family=Inter:wght@400;600"
+  },
   "slides": [
     "01-title.md",
     "02-liquid-gold.md",

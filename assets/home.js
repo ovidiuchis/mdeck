@@ -80,11 +80,51 @@
       })
     );
 
+    /* Load each deck's Google Fonts once, so its card can render in the deck's
+       own typeface. */
+    const loadedFonts = new Set();
+    function loadFonts(spec) {
+      if (!spec || loadedFonts.has(spec)) return;
+      loadedFonts.add(spec);
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://fonts.googleapis.com/css2?family=" + spec + "&display=swap";
+      document.head.appendChild(link);
+    }
+
+    const fontFallback = {
+      sans: ", system-ui, sans-serif",
+      display: ", system-ui, sans-serif",
+      mono: ", monospace",
+    };
+
+    /* Reflect each deck's theme on its card: free-form or named accent, the
+       theme's primary/gold, and its fonts — so the card's stripe, label, title
+       and "open" link carry the deck's identity. We deliberately do NOT override
+       paper/bone/ink here, so the home page's dark mode keeps working. */
+    function applyCardTheme(el, meta) {
+      const accent = meta.accent;
+      if (accent && (accent.charAt(0) === "#" || /^(rgb|hsl|var\()/i.test(accent)))
+        el.style.setProperty("--a", accent);
+      else el.dataset.accent = accent || "teal";
+      const theme = meta.theme || {};
+      const colors = theme.colors || {};
+      if (colors.ultra) el.style.setProperty("--ultra", colors.ultra);
+      if (colors.gold) el.style.setProperty("--gold", colors.gold);
+      loadFonts(theme.googleFonts);
+      for (const [k, v] of Object.entries(theme.fonts || {}))
+        if (typeof v === "string")
+          el.style.setProperty(
+            "--" + k,
+            /[,"]/.test(v) ? v : '"' + v + '"' + (fontFallback[k] || "")
+          );
+    }
+
     function card(id, meta) {
       const a = document.createElement("a");
       a.className = "deck-card";
       a.href = CFG.deck + "?p=" + encodeURIComponent(id);
-      a.dataset.accent = meta.accent || "teal";
+      applyCardTheme(a, meta);
       a.innerHTML =
         '<div class="meta">' + STR.cardMeta.replace("{n}", meta.slides.length) + "</div>" +
         "<h2>" + meta.title + "</h2>" +

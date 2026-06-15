@@ -26,6 +26,53 @@
   );
   if (!CFG.root.endsWith("/")) CFG.root += "/";
 
+  /* ---------- theming per prezentare (presentation.json → "theme") ----------
+     Suprascrie variabilele CSS din :root fără a atinge motorul:
+       "theme": {
+         "colors":      { "ultra": "#c0392b", "gold": "#e0a800", "bone": "#faf7f0" },
+         "fonts":       { "display": "Fraunces", "sans": "Inter", "mono": "JetBrains Mono" },
+         "googleFonts": "Fraunces:wght@700;900&family=Inter:wght@400;600"
+       }
+     Cheile din "colors"/"fonts" se mapează direct la --<cheie> (vezi style.css).
+     Injectăm un <style>:root{…}</style>, deci regulile html.dark din style.css
+     rămân mai specifice și tema închisă continuă să funcţioneze. */
+  function applyTheme(theme) {
+    if (!theme || typeof theme !== "object") return;
+    if (theme.googleFonts) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href =
+        "https://fonts.googleapis.com/css2?family=" + theme.googleFonts + "&display=swap";
+      document.head.appendChild(link);
+    }
+    const fallback = {
+      sans: ", system-ui, sans-serif",
+      display: ", system-ui, sans-serif",
+      mono: ", monospace",
+    };
+    const decls = [];
+    for (const [k, v] of Object.entries(theme.colors || {}))
+      if (typeof v === "string") decls.push("--" + k + ":" + v);
+    for (const [k, v] of Object.entries(theme.fonts || {}))
+      if (typeof v === "string")
+        decls.push(
+          "--" + k + ":" + (/[,"]/.test(v) ? v : '"' + v + '"' + (fallback[k] || ""))
+        );
+    if (!decls.length) return;
+    const style = document.createElement("style");
+    style.textContent = ":root{" + decls.join(";") + "}";
+    document.head.appendChild(style);
+  }
+
+  /* Accent per deck/slide: nume din paletă (data-accent) SAU valoare liberă
+     (#hex, rgb(), hsl(), var(...)) aplicată direct pe --a. */
+  function setAccent(el, value) {
+    if (!value) return;
+    if (value.charAt(0) === "#" || /^(rgb|hsl|var\()/i.test(value))
+      el.style.setProperty("--a", value);
+    else el.dataset.accent = value;
+  }
+
   /* UI strings — English defaults, overridable via window.MDECK.strings
      ({id}, {path}, {file} are replaced at render time) */
   const STR = Object.assign(
@@ -298,13 +345,14 @@
 
     document.title = meta.title + STR.titleSuffix;
     chipTitle.textContent = meta.title;
+    applyTheme(meta.theme);
     const deckAccent = meta.accent || "teal";
 
     sources.forEach((src) => {
       const { fm, html } = MD.parseSlide(src);
       const el = document.createElement("section");
       el.className = "slide layout-" + (fm.layout || "default");
-      el.dataset.accent = fm.accent || deckAccent;
+      setAccent(el, fm.accent || deckAccent);
       el.innerHTML = html;
       // imagine de fundal (layout: full-image) — relativă la folderul prezentării
       if (fm.image) {

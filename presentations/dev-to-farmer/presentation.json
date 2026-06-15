@@ -1,8 +1,22 @@
 {
   "title": "Why to switch from developer to farmer in 2026",
   "description": "Satirical sample deck: trading the infinite backlog for finite tomatoes.",
-  "accent": "amber",
+  "accent": "#a8531e",
   "tags": ["Demo", "Satire"],
+  "theme": {
+    "colors": {
+      "ultra": "#a8531e",
+      "gold":  "#d6a531",
+      "bone":  "#f7f1e3",
+      "paper": "#fffdf5",
+      "ink":   "#2b211a"
+    },
+    "fonts": {
+      "display": "Bricolage Grotesque",
+      "sans":    "Inter"
+    },
+    "googleFonts": "Bricolage+Grotesque:wght@700;800&family=Inter:wght@400;600"
+  },
   "slides": [
     "01-title.md",
     "02-the-case.md",

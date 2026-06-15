@@ -196,7 +196,9 @@ header.site {
   flex-direction: column;
   gap: 14px;
   padding: 28px 28px 24px;
-  background: var(--paper);
+  /* faint wash of the deck's accent over the surface — blended with --paper so
+     it adapts to light/dark automatically */
+  background: color-mix(in srgb, var(--a, var(--ultra)) 5%, var(--paper));
   border: var(--border);
   border-top: 4px solid var(--a, var(--ultra));
   border-radius: var(--r);
