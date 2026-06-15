@@ -130,6 +130,19 @@ Alternatives to the CDN: include this repo as a **git submodule** (relative refe
 
 Done — it shows up automatically on the home page.
 
+### The home-page card
+
+On the home page each deck appears as a **card** built entirely from `presentation.json` — **not** from the first slide. The card shows:
+
+- `title` — the card heading;
+- `description` (with `subtitle` as a fallback) — the line of text under the title;
+- `tags` — the chips along the bottom;
+- the slide count (`Presentation · N slides`, from `slides.length`) and an *Open →* link.
+
+The card also adopts the deck's identity so the library previews each presentation's look: its `accent` (the stripe/label color) and, if present, the `theme`'s `ultra`/`gold` colors and `fonts` (see [Theming](#theming-colors--fonts)). It deliberately keeps the home page's own `paper`/`bone`/`ink`, so dark mode stays consistent across cards.
+
+So to control how a deck looks in the list, edit those `presentation.json` fields — the title slide (`01-…md`) is independent.
+
 ## Collections
 
 Presentations can be grouped on the home page into **collections** (e.g. "Internship 2026", "Company general"). In `presentations/index.json`:

@@ -38,6 +38,8 @@ A ready-to-copy starter is in this skill's `template/` folder — copy it into `
 
 `slides` is the ordered list of files to load — it is the source of truth for order, not the filenames. `accent` is the deck-wide default accent; individual slides can override it. `accent` accepts a palette name (`teal | indigo | violet | amber | rose | emerald | sky`) **or** a literal color (`#c0392b`, `rgb(...)`, `hsl(...)`, `var(--gold)`).
 
+**The home-page card.** On the home page each deck is shown as a card built from `presentation.json` — **not** from the first slide. The card uses `title`, `description` (with `subtitle` as a fallback if there's no `description`), `tags`, and the slide count, and adopts the deck's `accent`/`theme` colors and fonts so the library previews its look. To change how a deck appears in the list, edit those fields — the `title` slide is independent of the card.
+
 **Theming (colors & fonts).** To rebrand a deck without touching the engine, add an optional `theme` block to `presentation.json`. `colors` keys map to CSS variables `--<key>` (`ultra` = primary, `gold`, `bone` = bg, `paper` = surfaces, `ink` = text); `fonts` has `display`/`sans`/`mono`; `googleFonts` (the part after `family=` in a Google Fonts URL) is auto-loaded. Dark mode (`D`) keeps working. The engine README lists 5 ready-made themes (Crimson, Forest, Slate, Sunset, Mono).
 
 ```json
