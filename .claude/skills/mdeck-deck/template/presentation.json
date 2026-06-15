@@ -1,0 +1,11 @@
+{
+  "title": "My presentation",
+  "description": "One-line summary shown on the home page.",
+  "accent": "indigo",
+  "tags": ["Tag"],
+  "slides": [
+    "01-title.md",
+    "02-content.md",
+    "03-final.md"
+  ]
+}

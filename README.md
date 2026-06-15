@@ -26,9 +26,10 @@ mdeck/
 │   ├── deck.js                 # viewer logic
 │   ├── md.js                   # Markdown adapter (frontmatter, containers, icons, math)
 │   └── vendor/                 # markdown-it, highlight.js, mermaid, katex (local)
-└── presentations/
-    ├── index.json              # list / collections of presentations
-    └── demo/                   # example — delete or replace it
+├── presentations/
+│   ├── index.json              # list / collections of presentations
+│   └── demo/                   # example — delete or replace it
+└── .claude/skills/mdeck-deck/  # Claude Code skill for authoring decks (see below)
 ```
 
 ## Getting started
@@ -264,3 +265,18 @@ Every slide has its own URL (`deck.html?p=demo#3`) — you can link directly to 
 ## Printing / PDF export
 
 Open the presentation and use *Print → Save as PDF* in the browser — each slide lands on its own page.
+
+## Authoring with Claude Code (bundled skill)
+
+This repo ships a [Claude Code](https://claude.com/claude-code) skill at [`.claude/skills/mdeck-deck/`](.claude/skills/mdeck-deck/) that teaches the agent the full slide syntax — layouts, `:::` containers, icons, `kbd`, Mermaid, KaTeX — plus the authoring rules (the fixed 1280×720 stage, one idea per slide) and a copy-ready `template/` deck.
+
+If you clone this repo, the skill is picked up automatically: just ask Claude Code things like *"make a deck about X"* or *"add a slide with a timeline"* and it follows the MDECK conventions.
+
+If you keep your content in a **separate repo** that embeds the engine, copy the skill folder into your project so the agent has it there too:
+
+```bash
+mkdir -p .claude/skills
+cp -r path/to/mdeck/.claude/skills/mdeck-deck .claude/skills/
+```
+
+It's plain Markdown — feel free to trim or adapt it to your own deck conventions.

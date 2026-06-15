@@ -12,8 +12,9 @@ Desktop.ini
 node_modules/
 package-lock.json
 
-# Setări locale Claude Code
-.claude
+# Setări locale Claude Code (dar versionăm skill-urile proiectului)
+.claude/*
+!.claude/skills/
 
 # Diverse temporare
 *.log
