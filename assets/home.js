@@ -1,5 +1,10 @@
 /* ============================================================
    home.js — home page: lists the presentations
+   Self-bootstrapping: loaded on its own as a single <script>, it
+   injects the stylesheet + fonts, so a host page only needs to
+   provide a <main id="decks"></main> and its own custom markup.
+   If the page already links style.css, the injection is skipped.
+
    Optional configuration, before including the script:
      window.MDECK = {
        root: "presentations/",   // presentations folder
@@ -11,11 +16,29 @@
 (function () {
   "use strict";
 
+  /* base URL of the engine assets — next to this script (local or CDN) */
+  const SELF = (document.currentScript && document.currentScript.src) || "";
+  const ASSETS = SELF.replace(/[^/]*$/, "");
+  const DEFAULT_FONTS =
+    "Archivo:wght@700;800&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600";
+
   const CFG = Object.assign(
     { root: "presentations/", deck: "deck.html" },
     window.MDECK || {}
   );
   if (!CFG.root.endsWith("/")) CFG.root += "/";
+
+  /* inject the engine stylesheet + fonts unless the page already links them */
+  function injectCss(href) {
+    const l = document.createElement("link");
+    l.rel = "stylesheet";
+    l.href = href;
+    document.head.appendChild(l);
+  }
+  if (ASSETS && !document.querySelector('link[href$="assets/style.css"]')) {
+    injectCss(ASSETS + "style.css");
+    injectCss("https://fonts.googleapis.com/css2?family=" + DEFAULT_FONTS + "&display=swap");
+  }
 
   /* UI strings — English defaults, overridable via window.MDECK.strings
      ({path} is replaced at render time) */

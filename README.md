@@ -20,10 +20,11 @@ mdeck/
 ├── index.html                  # home page (the presentation library)
 ├── deck.html                   # universal viewer: deck.html?p=<folder>
 ├── assets/
+│   ├── mdeck.js                # single entry point — loads the right module
 │   ├── style.css               # visual identity + home page
 │   ├── deck.css                # viewer styles
-│   ├── home.js                 # home page logic
-│   ├── deck.js                 # viewer logic
+│   ├── home.js                 # home page module (loaded by mdeck.js)
+│   ├── deck.js                 # viewer module (loaded by mdeck.js)
 │   ├── md.js                   # Markdown adapter (frontmatter, containers, icons, math)
 │   └── vendor/                 # markdown-it, highlight.js, mermaid, katex (local)
 ├── presentations/
@@ -63,24 +64,45 @@ content-repo/
     └── my-presentation/...
 ```
 
-In the content repo's `deck.html` and `index.html`, replace the local `assets/...` references with the CDN URLs and, optionally, set the configuration **before** the engine scripts:
+The engine has a **single entry point** — `mdeck.js`. It detects the page's role (deck viewer vs. home library) and loads the matching module, which then self-bootstraps: injects the stylesheets and fonts, loads its own dependencies (markdown-it, highlight.js) and builds the chrome. So a content repo's `deck.html` is just one script:
 
 ```html
-<script>
-  window.MDECK = {
-    root: "presentations/",   // presentations folder (default)
-    home: "index.html",       // home page (default)
-    author: "Jane Doe",       // signature on the first/last slide (default: none)
-    monogram: "JD",           // signature monogram (default: author's initials)
-    strings: {                // UI text overrides (default: English)
-      backToList: "Înapoi la lista de prezentări",
-      open: "Deschide"
-      // see the STR tables in home.js / deck.js for all keys
-    }
-  };
-</script>
-<script src="https://cdn.jsdelivr.net/gh/ovidiuchis/mdeck@main/assets/deck.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presentation</title>
+  <!-- set the dark theme before first paint, to avoid a flash -->
+  <script>
+    try {
+      const t = new URLSearchParams(location.search).get("theme") || localStorage.getItem("mdeck-theme");
+      if (t === "dark") document.documentElement.classList.add("dark");
+    } catch (e) {}
+  </script>
+  <script>
+    window.MDECK = {
+      root: "presentations/",   // presentations folder (default)
+      home: "index.html",       // home page (default)
+      author: "Jane Doe",       // signature on the first/last slide (default: none)
+      monogram: "JD",           // signature monogram (default: author's initials)
+      languages: ["powershell"],// extra highlight.js language files to load (default: none)
+      strings: {                // UI text overrides (default: English)
+        homeTitle: "Înapoi la lista de prezentări",
+        navPrev: "Slide anterior (←)"
+        // see the STR tables in home.js / deck.js for all keys
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/gh/ovidiuchis/mdeck@main/assets/mdeck.js"></script>
+</head>
+<body></body>
+</html>
 ```
+
+The home page (`index.html`) uses the **same** `mdeck.js` script — it just needs a `<main id="decks"></main>` somewhere, which is how the engine recognizes a home page and renders the card grid into it. Everything else on that page (your header, hero, footer) is yours to design; the engine injects the stylesheet/fonts but won't touch your markup. Put the script after the `<main id="decks">` element, or set `window.MDECK = { page: "home" }` to be explicit.
+
+> The engine still works with the older, verbose HTML (where every `assets/...` link and script is spelled out): if it detects that the page already provides the chrome and dependencies, it skips the bootstrap. New pages should use the single `mdeck.js` form above.
 
 Complete example of a content repo: [oc-prezentari](https://github.com/ovidiuchis/oc-prezentari).
 
@@ -265,7 +287,7 @@ SELECT Name, City FROM Customers WHERE City = 'Cluj-Napoca';
 ```
 ````
 
-The usual languages are included (sql, js/ts, python, bash, powershell, json, html, css, c#, java...); for others, download the language file from highlight.js into `assets/vendor/languages/` and include it in `deck.html`.
+The usual languages ship with highlight.js (sql, js/ts, python, bash, json, html, css, c#, java...). For extras — PowerShell, for example — drop the language file from highlight.js into `assets/vendor/languages/` and list it in the config: `window.MDECK = { languages: ["powershell"] }`. The engine then loads it on demand.
 
 ### Layout containers (grids, cards, stats)
 

@@ -4,10 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MDECK — Markdown slide decks</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css">
+  <!-- Set the dark theme before first paint to avoid a flash. -->
   <script>
     try {
       const t = new URLSearchParams(location.search).get("theme") || localStorage.getItem("mdeck-theme");
@@ -40,6 +37,6 @@
     </footer>
   </div>
 
-  <script src="assets/home.js"></script>
+  <script src="assets/mdeck.js"></script>
 </body>
 </html>

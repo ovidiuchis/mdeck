@@ -4,11 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Presentation</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css">
-  <link rel="stylesheet" href="assets/deck.css">
+  <!-- Set the dark theme before first paint to avoid a flash. -->
   <script>
     try {
       const t = new URLSearchParams(location.search).get("theme") || localStorage.getItem("mdeck-theme");
@@ -17,35 +13,8 @@
   </script>
 </head>
 <body>
-  <div id="progress"></div>
-
-  <div id="stage-wrap">
-    <div id="stage"></div>
-  </div>
-
-  <div id="hud">
-    <a class="chip" id="chip-home" href="index.html" title="Back to the library">
-      <span class="dot"></span>
-      <span id="chip-title">Presentation</span>
-    </a>
-    <div class="controls">
-      <button id="btn-prev" title="Previous slide (←)">&#8592;</button>
-      <span id="counter"></span>
-      <button id="btn-next" title="Next slide (→)">&#8594;</button>
-      <button id="btn-grid" title="Overview (G)">&#9638;</button>
-      <button id="btn-theme" title="Dark/light theme (D)">&#9681;</button>
-      <button id="btn-pdf" title="Export to PDF (P)">&#x2913;</button>
-      <button id="btn-full" title="Fullscreen (F)">&#x26F6;</button>
-    </div>
-  </div>
-
-  <div id="overview"></div>
-  <div id="deck-error"></div>
-
-  <script src="assets/vendor/markdown-it.min.js"></script>
-  <script src="assets/vendor/highlight.min.js"></script>
-  <script src="assets/vendor/languages/powershell.min.js"></script>
-  <script src="assets/md.js"></script>
-  <script src="assets/deck.js"></script>
+  <!-- The engine injects styles, loads its dependencies and builds the
+       viewer chrome. This single script is all a deck page needs. -->
+  <script src="assets/mdeck.js"></script>
 </body>
 </html>

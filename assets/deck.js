@@ -2,12 +2,19 @@
    deck.js — presentation viewer
    Usage: deck.html?p=<presentation-folder>#<slide-number>
 
+   Self-bootstrapping: loaded on its own as a single <script>, it
+   injects the stylesheets + fonts, loads its dependencies
+   (markdown-it, highlight.js, md.js) and builds the viewer chrome.
+   If the page already provides those (legacy full HTML), it detects
+   them and skips the bootstrap.
+
    Optional configuration, before including the script:
      window.MDECK = {
        root: "presentations/",   // presentations folder
        home: "index.html",       // home page (H key, links)
        author: "Jane Doe",       // signature on the first/last slide
        monogram: "JD",           // signature monogram (default: initials)
+       languages: ["powershell"],// extra highlight.js language files to load
        strings: { ... }          // UI text overrides (see STR below)
      }
    ============================================================ */
@@ -15,13 +22,18 @@
 (function () {
   "use strict";
 
-  /* where the vendored libs (mermaid/katex) live — next to this script,
-     whether local or on a CDN; derived from deck.js's own src */
+  /* base URL of the engine assets — next to this script, whether local
+     or on a CDN; derived from deck.js's own src */
   const SELF = (document.currentScript && document.currentScript.src) || "";
-  const VENDOR = SELF.replace(/[^/]*$/, "") + "vendor/";
+  const ASSETS = SELF.replace(/[^/]*$/, "");
+  const VENDOR = ASSETS + "vendor/";
+
+  /* default engine fonts (Google Fonts family spec) */
+  const DEFAULT_FONTS =
+    "Archivo:wght@700;800&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600";
 
   const CFG = Object.assign(
-    { root: "presentations/", home: "index.html", author: null, monogram: null },
+    { root: "presentations/", home: "index.html", author: null, monogram: null, languages: [] },
     window.MDECK || {}
   );
   if (!CFG.root.endsWith("/")) CFG.root += "/";
@@ -38,13 +50,7 @@
      stay more specific and the dark theme keeps working. */
   function applyTheme(theme) {
     if (!theme || typeof theme !== "object") return;
-    if (theme.googleFonts) {
-      const link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href =
-        "https://fonts.googleapis.com/css2?family=" + theme.googleFonts + "&display=swap";
-      document.head.appendChild(link);
-    }
+    if (theme.googleFonts) injectFonts(theme.googleFonts);
     const fallback = {
       sans: ", system-ui, sans-serif",
       display: ", system-ui, sans-serif",
@@ -79,6 +85,14 @@
     {
       backToList: "Back to all presentations",
       titleSuffix: " — Slides",
+      chipDefault: "Presentation",
+      homeTitle: "Back to the library",
+      navPrev: "Previous slide (←)",
+      navNext: "Next slide (→)",
+      navOverview: "Overview (G)",
+      navTheme: "Dark/light theme (D)",
+      navPdf: "Export to PDF (P)",
+      navFull: "Fullscreen (F)",
       noDeckTitle: "No presentation specified",
       noDeckBody:
         "Open this viewer with the <code style='display:inline;padding:2px 8px'>?p=presentation-name</code> parameter, for example:",
@@ -99,13 +113,8 @@
 
   const DESIGN_W = 1280, DESIGN_H = 720;
 
-  const stage = document.getElementById("stage");
-  const progress = document.getElementById("progress");
-  const counter = document.getElementById("counter");
-  const chipTitle = document.getElementById("chip-title");
-  const overview = document.getElementById("overview");
-  const errorBox = document.getElementById("deck-error");
-  document.getElementById("chip-home").href = CFG.home;
+  /* DOM refs — assigned in init(), once the chrome exists */
+  let stage, progress, counter, chipTitle, overview, errorBox;
 
   let slides = [];     // the .slide elements
   let cur = 0;
@@ -125,7 +134,6 @@
     const s = Math.min(window.innerWidth / DESIGN_W, window.innerHeight / DESIGN_H) * 0.96;
     stage.style.transform = "scale(" + s + ")";
   }
-  window.addEventListener("resize", fit);
 
   /* ---------- navigation ---------- */
   function show(i, instant) {
@@ -146,7 +154,6 @@
     clearTimeout(hudTimer);
     hudTimer = setTimeout(() => document.body.classList.remove("hud-visible"), 2600);
   }
-  window.addEventListener("mousemove", pokeHud);
 
   /* ---------- overview mode ---------- */
   function openOverview() {
@@ -210,54 +217,6 @@
     window.print();
   }
 
-  /* ---------- keyboard ---------- */
-  window.addEventListener("keydown", (e) => {
-    if (e.ctrlKey || e.metaKey || e.altKey) return;
-    switch (e.key) {
-      case "ArrowRight": case "ArrowDown": case " ": case "PageDown":
-        e.preventDefault(); closeOverview(); next(); break;
-      case "ArrowLeft": case "ArrowUp": case "PageUp":
-        e.preventDefault(); closeOverview(); prev(); break;
-      case "Home": e.preventDefault(); show(0); break;
-      case "End":  e.preventDefault(); show(slides.length - 1); break;
-      case "f": case "F": toggleFullscreen(); break;
-      case "h": case "H": location.href = CFG.home; break;
-      case "d": case "D": toggleTheme(); break;
-      case "g": case "G": case "o": case "O": toggleOverview(); break;
-      case "p": case "P": e.preventDefault(); printDeck(); break;
-      case "Escape": closeOverview(); break;
-    }
-  });
-
-  /* ---------- touch (swipe) ---------- */
-  let touchX = null;
-  window.addEventListener("touchstart", (e) => { touchX = e.touches[0].clientX; }, { passive: true });
-  window.addEventListener("touchend", (e) => {
-    if (touchX === null) return;
-    const dx = e.changedTouches[0].clientX - touchX;
-    if (Math.abs(dx) > 50) (dx < 0 ? next() : prev());
-    touchX = null;
-  }, { passive: true });
-
-  /* ---------- click on stage = forward ---------- */
-  document.getElementById("stage-wrap").addEventListener("click", (e) => {
-    if (e.target.closest("a, button, pre, code, table")) return;
-    if (window.getSelection().toString()) return;
-    next();
-  });
-
-  document.getElementById("btn-prev").addEventListener("click", (e) => { e.stopPropagation(); prev(); });
-  document.getElementById("btn-next").addEventListener("click", (e) => { e.stopPropagation(); next(); });
-  document.getElementById("btn-grid").addEventListener("click", (e) => { e.stopPropagation(); toggleOverview(); });
-  document.getElementById("btn-theme").addEventListener("click", (e) => { e.stopPropagation(); toggleTheme(); });
-  document.getElementById("btn-pdf").addEventListener("click", (e) => { e.stopPropagation(); printDeck(); });
-  document.getElementById("btn-full").addEventListener("click", (e) => { e.stopPropagation(); toggleFullscreen(); });
-
-  window.addEventListener("hashchange", () => {
-    const n = parseInt(location.hash.slice(1), 10);
-    if (!isNaN(n) && n - 1 !== cur) show(n - 1, true);
-  });
-
   /* ---------- lazy assets (mermaid, katex) ---------- */
   const loaded = {};
   function loadScript(src) {
@@ -278,6 +237,9 @@
     l.rel = "stylesheet";
     l.href = href;
     document.head.appendChild(l);
+  }
+  function injectFonts(spec) {
+    loadCss("https://fonts.googleapis.com/css2?family=" + spec + "&display=swap");
   }
 
   /* Render the diagrams and formulas in the slides, loading the vendored
@@ -404,5 +366,118 @@
     pokeHud();
   }
 
-  load();
+  /* ---------- viewer chrome (built when the page doesn't supply it) ---------- */
+  function buildScaffold() {
+    document.body.insertAdjacentHTML(
+      "afterbegin",
+      '<div id="progress"></div>' +
+        '<div id="stage-wrap"><div id="stage"></div></div>' +
+        '<div id="hud">' +
+          '<a class="chip" id="chip-home" href="' + CFG.home + '" title="' + STR.homeTitle + '">' +
+            '<span class="dot"></span><span id="chip-title">' + STR.chipDefault + "</span></a>" +
+          '<div class="controls">' +
+            '<button id="btn-prev" title="' + STR.navPrev + '">&#8592;</button>' +
+            '<span id="counter"></span>' +
+            '<button id="btn-next" title="' + STR.navNext + '">&#8594;</button>' +
+            '<button id="btn-grid" title="' + STR.navOverview + '">&#9638;</button>' +
+            '<button id="btn-theme" title="' + STR.navTheme + '">&#9681;</button>' +
+            '<button id="btn-pdf" title="' + STR.navPdf + '">&#x2913;</button>' +
+            '<button id="btn-full" title="' + STR.navFull + '">&#x26F6;</button>' +
+          "</div>" +
+        "</div>" +
+        '<div id="overview"></div>' +
+        '<div id="deck-error"></div>'
+    );
+  }
+
+  /* ---------- wiring (after the chrome exists) ---------- */
+  function init() {
+    stage = document.getElementById("stage");
+    progress = document.getElementById("progress");
+    counter = document.getElementById("counter");
+    chipTitle = document.getElementById("chip-title");
+    overview = document.getElementById("overview");
+    errorBox = document.getElementById("deck-error");
+    const chipHome = document.getElementById("chip-home");
+    if (chipHome) chipHome.href = CFG.home;
+
+    window.addEventListener("resize", fit);
+    window.addEventListener("mousemove", pokeHud);
+
+    /* keyboard */
+    window.addEventListener("keydown", (e) => {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      switch (e.key) {
+        case "ArrowRight": case "ArrowDown": case " ": case "PageDown":
+          e.preventDefault(); closeOverview(); next(); break;
+        case "ArrowLeft": case "ArrowUp": case "PageUp":
+          e.preventDefault(); closeOverview(); prev(); break;
+        case "Home": e.preventDefault(); show(0); break;
+        case "End":  e.preventDefault(); show(slides.length - 1); break;
+        case "f": case "F": toggleFullscreen(); break;
+        case "h": case "H": location.href = CFG.home; break;
+        case "d": case "D": toggleTheme(); break;
+        case "g": case "G": case "o": case "O": toggleOverview(); break;
+        case "p": case "P": e.preventDefault(); printDeck(); break;
+        case "Escape": closeOverview(); break;
+      }
+    });
+
+    /* touch (swipe) */
+    let touchX = null;
+    window.addEventListener("touchstart", (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+    window.addEventListener("touchend", (e) => {
+      if (touchX === null) return;
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 50) (dx < 0 ? next() : prev());
+      touchX = null;
+    }, { passive: true });
+
+    /* click on stage = forward */
+    document.getElementById("stage-wrap").addEventListener("click", (e) => {
+      if (e.target.closest("a, button, pre, code, table")) return;
+      if (window.getSelection().toString()) return;
+      next();
+    });
+
+    document.getElementById("btn-prev").addEventListener("click", (e) => { e.stopPropagation(); prev(); });
+    document.getElementById("btn-next").addEventListener("click", (e) => { e.stopPropagation(); next(); });
+    document.getElementById("btn-grid").addEventListener("click", (e) => { e.stopPropagation(); toggleOverview(); });
+    document.getElementById("btn-theme").addEventListener("click", (e) => { e.stopPropagation(); toggleTheme(); });
+    document.getElementById("btn-pdf").addEventListener("click", (e) => { e.stopPropagation(); printDeck(); });
+    document.getElementById("btn-full").addEventListener("click", (e) => { e.stopPropagation(); toggleFullscreen(); });
+
+    window.addEventListener("hashchange", () => {
+      const n = parseInt(location.hash.slice(1), 10);
+      if (!isNaN(n) && n - 1 !== cur) show(n - 1, true);
+    });
+
+    load();
+  }
+
+  /* ---------- bootstrap ----------
+     Inject CSS/fonts and build the chrome only if the page didn't already
+     provide them; load the parser/highlighter/adapter only if they aren't
+     global yet. This keeps legacy full HTML pages working unchanged. */
+  async function boot() {
+    if (!document.getElementById("stage")) {
+      injectFonts(DEFAULT_FONTS);
+      loadCss(ASSETS + "style.css");
+      loadCss(ASSETS + "deck.css");
+      buildScaffold();
+    }
+    if (!window.MD) {
+      await Promise.all([
+        window.markdownit || loadScript(VENDOR + "markdown-it.min.js"),
+        window.hljs || loadScript(VENDOR + "highlight.min.js"),
+      ]);
+      for (const lang of CFG.languages || []) {
+        try { await loadScript(VENDOR + "languages/" + lang + ".min.js"); } catch (e) {}
+      }
+      await loadScript(ASSETS + "md.js");
+    }
+    init();
+  }
+
+  boot();
 })();
