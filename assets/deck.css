@@ -911,10 +911,28 @@ body.overview #stage-wrap { visibility: hidden; }
 
 #deck-error a { color: var(--ultra); font-weight: 600; }
 
-/* ---------- print ---------- */
+/* ---------- print / export PDF ----------
+   Fiecare slide devine exact o pagină 16:9 (1280×720), edge-to-edge,
+   fără margini. „Print → Save as PDF” din browser dă un fişier curat,
+   un slide pe pagină, gata de trimis pe email.
+   Vezi printDeck() din deck.js: aşteaptă mermaid/KaTeX înainte de print. */
+
+/* Pagina PDF are fix proporţia slide-ului → zero margini, zero scalare. */
+@page {
+  size: 1280px 720px;
+  margin: 0;
+}
+
 @media print {
-  html, body { overflow: visible; background: #fff; }
-  #progress, #hud, #overview { display: none !important; }
+  /* păstrează fundalurile pline, diagramele şi codul colorat în PDF */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html, body { overflow: visible; height: auto; background: #fff; }
+  #progress, #hud, #overview, #deck-error { display: none !important; }
+
   #stage-wrap { position: static; }
   #stage {
     position: static;
@@ -923,14 +941,27 @@ body.overview #stage-wrap { visibility: hidden; }
     margin: 0;
     transform: none !important;
   }
+
   .slide {
     position: relative;
     inset: auto;
     width: 1280px;
     height: 720px;
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    page-break-after: always;
+    margin: 0;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    transition: none !important;
+    overflow: hidden;            /* conţinutul nu curge pe pagina următoare */
+    break-after: page;
+    page-break-after: always;    /* alias pentru browsere mai vechi */
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* fără pagină albă suplimentară după ultimul slide */
+  .slide:last-child {
+    break-after: auto;
+    page-break-after: auto;
   }
 }

@@ -355,6 +355,7 @@ Math is rendered with [KaTeX](https://katex.org/); `$…$` is inline, `$$…$$` 
 | `H` | back to the presentation list (Home) |
 | `D` | toggle dark / light theme (remembered in the browser) |
 | `G` or `O` | overview (grid with all slides) |
+| `P` | export to PDF (opens the browser print dialog) |
 | `Esc` | close the overview |
 | swipe left/right | touch navigation |
 
@@ -362,7 +363,14 @@ Every slide has its own URL (`deck.html?p=demo#3`) — you can link directly to 
 
 ## Printing / PDF export
 
-Open the presentation and use *Print → Save as PDF* in the browser — each slide lands on its own page.
+Press **`P`** (or click the **⤓** button in the toolbar) to open the browser's print dialog, then choose **Save as PDF**. The engine sizes each page to the exact 16:9 slide (`1280×720`), so you get **one slide per page, edge-to-edge, with no margins** — backgrounds, colored callouts, code highlighting and Mermaid/KaTeX are all preserved. The result is a clean file you can attach to an email.
+
+Tips for the print dialog:
+
+- **Destination:** *Save as PDF*
+- **Margins:** *None* (the engine already removes them via `@page`)
+- **Background graphics:** *On* — usually on by default; turn it on if the title/section slides come out white.
+- The `P` shortcut waits for diagrams and formulas to finish rendering before opening the dialog, so they always make it into the PDF.
 
 ## Authoring with Claude Code (bundled skill)
 

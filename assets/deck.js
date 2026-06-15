@@ -197,6 +197,19 @@
     try { localStorage.setItem("mdeck-theme", dark ? "dark" : "light"); } catch (e) {}
   }
 
+  /* ---------- export PDF (Print to PDF nativ) ----------
+     Toate slide-urile sunt deja în DOM; @media print din deck.css le
+     transformă în pagini 16:9 edge-to-edge. Aici doar ne asigurăm că
+     mermaid/KaTeX au terminat de randat înainte de a deschide dialogul. */
+  let enhanceDone = Promise.resolve();
+  async function printDeck() {
+    closeOverview();
+    try { await enhanceDone; } catch (e) {}
+    // un frame ca browserul să aşeze diagramele proaspăt randate
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    window.print();
+  }
+
   /* ---------- keyboard ---------- */
   window.addEventListener("keydown", (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
@@ -211,6 +224,7 @@
       case "h": case "H": location.href = CFG.home; break;
       case "d": case "D": toggleTheme(); break;
       case "g": case "G": case "o": case "O": toggleOverview(); break;
+      case "p": case "P": e.preventDefault(); printDeck(); break;
       case "Escape": closeOverview(); break;
     }
   });
@@ -236,6 +250,7 @@
   document.getElementById("btn-next").addEventListener("click", (e) => { e.stopPropagation(); next(); });
   document.getElementById("btn-grid").addEventListener("click", (e) => { e.stopPropagation(); toggleOverview(); });
   document.getElementById("btn-theme").addEventListener("click", (e) => { e.stopPropagation(); toggleTheme(); });
+  document.getElementById("btn-pdf").addEventListener("click", (e) => { e.stopPropagation(); printDeck(); });
   document.getElementById("btn-full").addEventListener("click", (e) => { e.stopPropagation(); toggleFullscreen(); });
 
   window.addEventListener("hashchange", () => {
@@ -365,7 +380,7 @@
     });
 
     // mermaid + KaTeX, încărcate doar dacă vreun slide chiar le folosește
-    enhance();
+    enhanceDone = enhance();
 
     // author signature (if configured) — only on the title and final slides
     if (CFG.author && slides.length) {
