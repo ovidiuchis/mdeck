@@ -1,12 +1,21 @@
 {
   "title": "MDECK — demo",
-  "description": "Demo presentation: slide syntax, layouts and MDECK containers.",
+  "description": "Demo presentation: Markdown syntax, layouts, components, icons, diagrams and math.",
   "accent": "indigo",
   "tags": ["Demo", "Markdown"],
   "slides": [
     "01-title.md",
     "02-syntax.md",
-    "03-containers.md",
-    "04-final.md"
+    "03-split.md",
+    "04-grids.md",
+    "05-callouts.md",
+    "06-timeline.md",
+    "07-steps.md",
+    "08-columns.md",
+    "09-diagrams.md",
+    "10-math.md",
+    "11-full-image.md",
+    "12-quote.md",
+    "13-final.md"
   ]
 }

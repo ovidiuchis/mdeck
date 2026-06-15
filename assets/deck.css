@@ -355,6 +355,185 @@ html.dark .slide code {
   margin: 10px 0 0;
 }
 
+/* grile suplimentare + proporții (style inline din md.js le poate suprascrie) */
+.slide .g1 { grid-template-columns: 1fr; }
+.slide .g5 { grid-template-columns: repeat(5, 1fr); }
+.slide .g6 { grid-template-columns: repeat(6, 1fr); }
+
+/* ---------- split (două jumătăți centrate) + col ---------- */
+.slide .split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+  margin: 22px 0;
+}
+.slide .split > * { margin-top: 0; margin-bottom: 0; }
+.slide .col > *:first-child { margin-top: 0; }
+.slide .col > *:last-child { margin-bottom: 0; }
+.slide .col img, .slide .col pre { margin: 0; }
+
+/* ---------- columns (text curgător) ---------- */
+.slide .columns {
+  column-gap: 40px;
+  column-rule: 1px solid var(--line-mid);
+  margin: 18px 0;
+}
+.slide .columns > *:first-child { margin-top: 0; }
+.slide .columns h3 { break-after: avoid; }
+.slide .columns li { break-inside: avoid; }
+
+/* ---------- timeline (cronologie verticală) ---------- */
+.slide .timeline { margin: 24px 0; }
+.slide .timeline ul, .slide .timeline ol {
+  list-style: none;
+  position: relative;
+  margin: 0;
+  padding-left: 36px;
+  gap: 20px;
+}
+.slide .timeline ul::before, .slide .timeline ol::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: var(--line-mid);
+}
+.slide .timeline > ul > li, .slide .timeline > ol > li {
+  position: relative;
+  padding-left: 0;
+}
+.slide .timeline > ul > li::before, .slide .timeline > ol > li::before {
+  content: "";
+  position: absolute;
+  left: -36px;
+  top: 0.15em;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 3px solid var(--a, var(--ultra));
+}
+.slide .timeline li strong { display: inline; color: var(--ink); }
+
+/* ---------- steps (pași numerotați, orizontal) ---------- */
+.slide .steps ol {
+  list-style: none;
+  counter-reset: step;
+  display: flex;
+  gap: 18px;
+  margin: 22px 0;
+  padding: 0;
+}
+.slide .steps ol > li {
+  counter-increment: step;
+  flex: 1;
+  padding: 18px 20px 20px;
+  background: var(--paper);
+  border: var(--border);
+  border-top: 4px solid var(--a, var(--ultra));
+  border-radius: var(--r);
+  box-shadow: var(--shadow-sm);
+  font-size: 17.5px;
+  line-height: 1.5;
+}
+.slide .steps ol > li::before {
+  content: counter(step);
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-bottom: 12px;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--bone);
+  background: var(--a, var(--ultra));
+}
+.slide .steps ol > li strong { color: var(--ink); }
+
+/* ---------- callout (casetă de notă) ---------- */
+.slide .callout {
+  position: relative;
+  margin: 18px 0;
+  padding: 16px 22px 16px 62px;
+  background: var(--paper);
+  border: var(--border);
+  border-left: 6px solid var(--cc, var(--ultra));
+  box-shadow: var(--shadow-sm);
+}
+.slide .callout::before {
+  position: absolute;
+  left: 18px;
+  top: 16px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--bone);
+  background: var(--cc, var(--ultra));
+  border-radius: 50%;
+}
+.slide .callout > * { margin: 0; }
+.slide .callout > * + * { margin-top: 8px; }
+.slide .callout p, .slide .callout li { font-size: 18px; }
+.slide .callout-info { --cc: var(--azure); }
+.slide .callout-info::before { content: "i"; }
+.slide .callout-tip  { --cc: var(--plum); }
+.slide .callout-tip::before  { content: "\2605"; } /* ★ */
+.slide .callout-ok   { --cc: var(--green); }
+.slide .callout-ok::before   { content: "\2713"; } /* ✓ */
+.slide .callout-warn { --cc: var(--coral); }
+.slide .callout-warn::before { content: "!"; }
+
+/* ---------- iconițe inline ---------- */
+.slide .icon {
+  display: inline-flex;
+  vertical-align: -0.18em;
+  line-height: 1;
+}
+.slide .icon svg {
+  width: 1.1em;
+  height: 1.1em;
+  color: var(--a, var(--ultra));
+}
+
+/* ---------- taste [[ ]] → kbd ---------- */
+.slide kbd {
+  font-family: var(--mono);
+  font-size: 0.82em;
+  font-weight: 600;
+  padding: 2px 9px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 5px;
+  box-shadow: 2px 2px 0 var(--ink);
+  white-space: nowrap;
+}
+
+/* ---------- mermaid ---------- */
+.slide pre.mermaid {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 18px 0;
+  display: flex;
+  justify-content: center;
+  overflow: visible;
+}
+.slide pre.mermaid svg { max-width: 100%; height: auto; }
+
+/* ---------- KaTeX ---------- */
+.slide .katex { font-size: 1.06em; }
+.slide .katex-display { margin: 20px 0; overflow-x: auto; overflow-y: hidden; }
+
 /* ---------- layout-uri ---------- */
 
 /* slide de titlu și de secțiune — ultramarin plin */
@@ -420,6 +599,106 @@ html.dark .slide code {
 .layout-center p { margin-left: auto; margin-right: auto; }
 .layout-center ul, .layout-center ol { text-align: left; }
 .layout-center .grid { width: 100%; }
+
+/* ---------- full-image (imagine pe tot slide-ul, titlu overlay) ---------- */
+.slide.has-image {
+  background:
+    linear-gradient(to top,
+      rgba(16, 16, 24, 0.88) 0%,
+      rgba(16, 16, 24, 0.25) 48%,
+      rgba(16, 16, 24, 0.45) 100%),
+    var(--slide-image) center / cover no-repeat;
+}
+.layout-full-image { justify-content: flex-end; }
+.layout-full-image h6 { color: rgba(255, 255, 255, 0.82); }
+.layout-full-image h6::before { background: var(--gold); }
+.layout-full-image h1 {
+  color: #fff;
+  font-size: 74px;
+  max-width: 1040px;
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.45);
+}
+.layout-full-image h2 { color: #fff; }
+.layout-full-image p { color: rgba(255, 255, 255, 0.9); max-width: 900px; }
+.layout-full-image strong { color: var(--gold); }
+.layout-full-image a { color: #fff; }
+
+/* ---------- quote (citat de impact) ---------- */
+.layout-quote {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.layout-quote blockquote {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  max-width: 1040px;
+}
+.layout-quote blockquote::before {
+  content: "\201C";
+  display: block;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 120px;
+  line-height: 0.4;
+  color: var(--a, var(--ultra));
+  margin-bottom: 24px;
+}
+.layout-quote blockquote p {
+  font-family: var(--display);
+  font-weight: 700;
+  font-style: normal;
+  font-size: 44px;
+  line-height: 1.24;
+  color: var(--ink);
+}
+.layout-quote > p {
+  margin-top: 28px;
+  font-family: var(--mono);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* ---------- end / thanks (slide final pe ultramarin) ---------- */
+.layout-end, .layout-thanks {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: var(--title-bg);
+}
+.layout-end h6, .layout-thanks h6 {
+  align-self: center;
+  color: rgba(245, 242, 233, 0.8);
+}
+.layout-end h6::before, .layout-thanks h6::before { background: var(--gold); }
+.layout-end h1, .layout-thanks h1 {
+  color: var(--bone);
+  font-size: 74px;
+  max-width: 1040px;
+}
+.layout-end h2, .layout-thanks h2 { color: var(--bone); }
+.layout-end h2::after, .layout-thanks h2::after {
+  margin-left: auto;
+  margin-right: auto;
+  background: var(--gold);
+}
+.layout-end p, .layout-thanks p {
+  margin-left: auto;
+  margin-right: auto;
+  color: rgba(245, 242, 233, 0.85);
+}
+.layout-end strong, .layout-thanks strong { color: var(--gold); }
+.layout-end a, .layout-thanks a {
+  color: var(--gold);
+  border-bottom-color: rgba(234, 180, 56, 0.5);
+}
+.layout-end .icon svg, .layout-thanks .icon svg { color: var(--gold); }
 
 /* ---------- semnătura (doar pe titlu și final) ---------- */
 .sign {

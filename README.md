@@ -24,8 +24,8 @@ mdeck/
 │   ├── deck.css                # viewer styles
 │   ├── home.js                 # home page logic
 │   ├── deck.js                 # viewer logic
-│   ├── md.js                   # Markdown adapter (frontmatter + ::: containers)
-│   └── vendor/                 # markdown-it, highlight.js (local)
+│   ├── md.js                   # Markdown adapter (frontmatter, containers, icons, math)
+│   └── vendor/                 # markdown-it, highlight.js, mermaid, katex (local)
 └── presentations/
     ├── index.json              # list / collections of presentations
     └── demo/                   # example — delete or replace it
@@ -137,8 +137,9 @@ A slide = one Markdown file, optionally with frontmatter:
 
 ```markdown
 ---
-layout: title        # title | section | center | default
+layout: title        # title | section | center | default | quote | full-image | end
 accent: indigo       # teal | indigo | violet | amber | rose | emerald | sky
+image: cover.jpg     # only for layout: full-image (path relative to the deck folder)
 ---
 
 ###### Small label above the title (eyebrow)
@@ -186,7 +187,63 @@ The stat label
 :::
 ```
 
-`grid 2|3|4` creates columns; `card <accent>` a colored card; `stat <accent>` a big number with a label. Each empty `:::` closes the current container.
+`grid 2|3|4` creates equal columns; `grid 1-2` (or `1-2-1`, …) sets proportional widths; `card <accent>` a colored card; `stat <accent>` a big number with a label. Each empty `:::` closes the current container.
+
+### More containers
+
+```markdown
+::: split            # two halves, vertically centered (text next to media)
+::: col
+Left side — text, lists, anything.
+:::
+::: col
+![screenshot](shot.png)
+:::
+:::
+
+::: columns 2        # body text flowing across 2 (or 3) newspaper columns
+Long reference text…
+:::
+
+::: timeline         # a vertical timeline, built from a list
+- **Step one.** Description.
+- **Step two.** Description.
+:::
+
+::: steps            # numbered step cards, side by side (from an ordered list)
+1. **Create** the folder.
+2. **Write** the slides.
+3. **Present.**
+:::
+
+::: callout info     # note boxes: info | tip | ok | warn
+**Heads up:** serve over HTTP, not file://.
+:::
+```
+
+### Inline extras
+
+- **Icons** — `:check:` `:star:` `:zap:` `:rocket:` `:bulb:` `:info:` `:alert:` `:heart:` `:clock:` `:users:` `:lock:` `:chart:` `:flag:` `:mail:` `:calendar:` `:target:` `:globe:` `:code:` `:database:` `:leaf:` (Feather-style SVGs, colored with the slide accent). Unknown `:names:` are left untouched.
+- **Keys** — `[[Ctrl]]` `[[Space]]` `[[→]]` render as styled `<kbd>` chips.
+
+### Diagrams and math
+
+Both libraries are vendored locally and **loaded on demand** — decks that don't use them stay lean.
+
+````markdown
+```mermaid
+flowchart LR
+  A[Markdown] --> B{md.js} --> C[Slides]
+```
+````
+
+```markdown
+Inline math like $e^{i\pi}+1=0$ and display blocks:
+
+$$ \sigma = \sqrt{\tfrac{1}{N}\sum (x_i-\mu)^2} $$
+```
+
+Math is rendered with [KaTeX](https://katex.org/); `$…$` is inline, `$$…$$` is a display block. Dollar signs inside code (`` `$VAR` `` or fenced blocks) are ignored.
 
 ## Navigating a presentation
 

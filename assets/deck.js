@@ -15,6 +15,11 @@
 (function () {
   "use strict";
 
+  /* unde stau vendorele (mermaid/katex) — lângă acest script, fie local,
+     fie pe CDN; derivat din src-ul lui deck.js */
+  const SELF = (document.currentScript && document.currentScript.src) || "";
+  const VENDOR = SELF.replace(/[^/]*$/, "") + "vendor/";
+
   const CFG = Object.assign(
     { root: "presentations/", home: "index.html", author: null, monogram: null },
     window.MDECK || {}
@@ -191,6 +196,64 @@
     if (!isNaN(n) && n - 1 !== cur) show(n - 1, true);
   });
 
+  /* ---------- lazy assets (mermaid, katex) ---------- */
+  const loaded = {};
+  function loadScript(src) {
+    return (loaded[src] =
+      loaded[src] ||
+      new Promise((res, rej) => {
+        const s = document.createElement("script");
+        s.src = src;
+        s.onload = res;
+        s.onerror = () => rej(new Error("load " + src));
+        document.head.appendChild(s);
+      }));
+  }
+  function loadCss(href) {
+    if (loaded[href]) return;
+    loaded[href] = true;
+    const l = document.createElement("link");
+    l.rel = "stylesheet";
+    l.href = href;
+    document.head.appendChild(l);
+  }
+
+  /* Randează diagramele și formulele din slide-uri, încărcând librăriile
+     vendorizate la cerere. Nu blochează afișarea: rulează în fundal. */
+  async function enhance() {
+    const dark = document.documentElement.classList.contains("dark");
+
+    // KaTeX — doar dacă md.js a produs elemente .math (formule extrase din $…$)
+    const maths = stage.querySelectorAll(".math");
+    if (maths.length) {
+      loadCss(VENDOR + "katex/katex.min.css");
+      try {
+        await loadScript(VENDOR + "katex/katex.min.js");
+        maths.forEach((el) => {
+          try {
+            window.katex.render(el.textContent, el, {
+              displayMode: el.classList.contains("math-display"),
+              throwOnError: false,
+            });
+          } catch (e) { /* lasă sursa brută dacă formula e invalidă */ }
+        });
+      } catch (e) { /* fără math dacă lipsește librăria */ }
+    }
+
+    // Mermaid — doar dacă există vreo diagramă
+    if (stage.querySelector("pre.mermaid")) {
+      try {
+        await loadScript(VENDOR + "mermaid.min.js");
+        window.mermaid.initialize({
+          startOnLoad: false,
+          theme: dark ? "dark" : "neutral",
+          fontFamily: "inherit",
+        });
+        await window.mermaid.run({ nodes: stage.querySelectorAll("pre.mermaid") });
+      } catch (e) { /* fără diagrame dacă lipsește librăria */ }
+    }
+  }
+
   /* ---------- loading ---------- */
   async function load() {
     const id = new URLSearchParams(location.search).get("p");
@@ -243,9 +306,18 @@
       el.className = "slide layout-" + (fm.layout || "default");
       el.dataset.accent = fm.accent || deckAccent;
       el.innerHTML = html;
+      // imagine de fundal (layout: full-image) — relativă la folderul prezentării
+      if (fm.image) {
+        const url = /^(https?:|data:|\/)/.test(fm.image) ? fm.image : base + fm.image;
+        el.style.setProperty("--slide-image", "url('" + url.replace(/'/g, "%27") + "')");
+        el.classList.add("has-image");
+      }
       stage.appendChild(el);
       slides.push(el);
     });
+
+    // mermaid + KaTeX, încărcate doar dacă vreun slide chiar le folosește
+    enhance();
 
     // author signature (if configured) — only on the title and final slides
     if (CFG.author && slides.length) {

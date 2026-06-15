@@ -7,4 +7,4 @@ accent: indigo
 
 # Slide decks from Markdown
 
-One folder = one presentation. One `.md` file = one slide. No build step, no external dependencies — just HTML, CSS and JavaScript.
+One folder = one presentation. One `.md` file = one slide. No build step, no external dependencies — just HTML, CSS and JavaScript. :rocket:
