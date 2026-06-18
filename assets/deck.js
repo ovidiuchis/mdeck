@@ -87,6 +87,7 @@
       backToList: "Back to all presentations",
       titleSuffix: " — Slides",
       chipDefault: "Presentation",
+      loading: "Loading",
       homeTitle: "Back to the library",
       navPrev: "Previous slide (←)",
       navNext: "Next slide (→)",
@@ -121,6 +122,7 @@
   let slides = [];     // the .slide elements
   let cur = 0;
   let hudTimer = null;
+  let loadingTimer = null;
   let zoomInstance = null;
 
   /* region zoom (Ctrl/Cmd+click) state */
@@ -129,8 +131,25 @@
   let regionZoomed = false;
   let zoomOX = DESIGN_W / 2, zoomOY = DESIGN_H / 2;
 
+  /* ---------- loading screen ----------
+     Reveal only if the deck takes longer than 300ms to fetch, so fast
+     (local) loads never flash a spinner. hideLoading() clears both the
+     pending timer and the visible state. */
+  function showLoadingSoon() {
+    loadingTimer = setTimeout(() => {
+      const el = document.getElementById("deck-loading");
+      if (el) el.classList.add("visible");
+    }, 300);
+  }
+  function hideLoading() {
+    clearTimeout(loadingTimer);
+    const el = document.getElementById("deck-loading");
+    if (el) el.classList.remove("visible");
+  }
+
   /* ---------- errors ---------- */
   function showError(title, lines) {
+    hideLoading();
     errorBox.innerHTML =
       '<div class="error-panel"><h2>' + title + "</h2>" +
       lines.map((l) => (l.startsWith("$") ? "<code>" + l.slice(1) + "</code>" : "<p>" + l + "</p>")).join("") +
@@ -423,6 +442,7 @@
     const n = parseInt(location.hash.slice(1), 10);
     show(!isNaN(n) ? n - 1 : 0, true);
     pokeHud();
+    hideLoading();
   }
 
   /* ---------- viewer chrome (built when the page doesn't supply it) ---------- */
@@ -447,6 +467,10 @@
           "</div>" +
         "</div>" +
         '<div id="overview"></div>' +
+        '<div id="deck-loading"><div class="box">' +
+          '<div class="tiles"><span></span><span></span><span></span></div>' +
+          '<div class="label">' + STR.loading + '</div>' +
+        "</div></div>" +
         '<div id="deck-error"></div>'
     );
   }
@@ -576,6 +600,7 @@
       loadCss(ASSETS + "style.css");
       loadCss(ASSETS + "deck.css");
       buildScaffold();
+      showLoadingSoon();
     }
     if (!window.MD) {
       await Promise.all([
