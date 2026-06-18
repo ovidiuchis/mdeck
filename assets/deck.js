@@ -191,10 +191,10 @@
   const prev = () => show(cur - 1);
 
   /* ---------- auto-hiding HUD ---------- */
-  function pokeHud() {
+  function pokeHud(ms) {
     document.body.classList.add("hud-visible");
     clearTimeout(hudTimer);
-    hudTimer = setTimeout(() => document.body.classList.remove("hud-visible"), 2600);
+    hudTimer = setTimeout(() => document.body.classList.remove("hud-visible"), ms || 2600);
   }
 
   /* ---------- overview mode ---------- */
@@ -486,14 +486,58 @@
       }
     });
 
-    /* touch (swipe) */
-    let touchX = null;
-    window.addEventListener("touchstart", (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+    /* touch — swipe to navigate, two-finger pinch to zoom, any tap reveals
+       the HUD (touch devices have no mousemove to poke it back). */
+    let touchX = null, touchY = null;
+    let pinching = false, pinchStart = 0, pinchLast = 0, pinchMidX = 0, pinchMidY = 0;
+    const pinchDist = (t) =>
+      Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+    const pinchMid = (t) => {
+      pinchMidX = (t[0].clientX + t[1].clientX) / 2;
+      pinchMidY = (t[0].clientY + t[1].clientY) / 2;
+    };
+
+    window.addEventListener("touchstart", (e) => {
+      if (e.touches.length === 2) {
+        pinching = true;
+        pinchStart = pinchLast = pinchDist(e.touches);
+        pinchMid(e.touches);
+      } else {
+        pinching = false;
+        touchX = e.touches[0].clientX;
+        touchY = e.touches[0].clientY;
+      }
+    }, { passive: true });
+
+    window.addEventListener("touchmove", (e) => {
+      if (pinching && e.touches.length === 2) {
+        pinchLast = pinchDist(e.touches);
+        pinchMid(e.touches);
+      }
+    }, { passive: true });
+
     window.addEventListener("touchend", (e) => {
-      if (touchX === null) return;
-      const dx = e.changedTouches[0].clientX - touchX;
-      if (Math.abs(dx) > 50) (dx < 0 ? next() : prev());
-      touchX = null;
+      if (pinching) {
+        if (e.touches.length > 0) return; // wait for all fingers to lift
+        pinching = false;
+        const ratio = pinchStart ? pinchLast / pinchStart : 1;
+        if (ratio > 1.25 && !regionZoomed)
+          zoomToPoint({ clientX: pinchMidX, clientY: pinchMidY });
+        else if (ratio < 0.8 && regionZoomed)
+          exitRegionZoom();
+        touchX = touchY = null;
+        pokeHud(4500);
+        return;
+      }
+      if (touchX !== null) {
+        const dx = e.changedTouches[0].clientX - touchX;
+        const dy = e.changedTouches[0].clientY - touchY;
+        // horizontal swipe only — guard against vertical scroll / diagonal drags
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy))
+          (dx < 0 ? next() : prev());
+      }
+      touchX = touchY = null;
+      pokeHud(4500);
     }, { passive: true });
 
     /* click on stage = forward */

@@ -395,7 +395,9 @@ Math is rendered with [KaTeX](https://katex.org/); `$…$` is inline, `$$…$$` 
 | `G` or `O` | overview (grid with all slides) |
 | `P` | export to PDF (opens the browser print dialog) |
 | `Esc` | close the overview or image zoom |
-| swipe left/right | touch navigation |
+| swipe left / right | next / previous slide (touch) |
+| pinch out / in | zoom a region in / out (touch) |
+| tap | next slide, and reveal the toolbar (touch) |
 
 Every slide has its own URL (`deck.html?p=demo#3`) — you can link directly to a slide.
 

@@ -858,6 +858,19 @@ body.hud-visible #hud { opacity: 1; }
 
 #hud .controls #counter b { color: var(--text); font-weight: 700; }
 
+/* ---------- touch / coarse-pointer devices ----------
+   No hover and no mousemove to reveal the HUD: enlarge the controls to
+   comfortable tap targets (~44px) since they're the only way back to the
+   library and into overview/zoom once the auto-hide fires. */
+@media (hover: none), (pointer: coarse) {
+  #hud { padding: 16px; }
+  #hud .chip { padding: 11px 16px; font-size: 12.5px; }
+  #hud .controls { gap: 6px; padding: 6px 8px; }
+  #hud .controls button,
+  #hud .controls .close { width: 44px; height: 44px; font-size: 18px; }
+  #hud .controls #counter { font-size: 15px; padding: 0 12px; }
+}
+
 /* ---------- overview mode ---------- */
 #overview {
   position: fixed;
