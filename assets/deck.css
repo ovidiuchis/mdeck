@@ -25,7 +25,11 @@ html, body {
   margin-left: -640px;
   margin-top: -360px;
   transform-origin: center center;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+/* region zoom (Ctrl/Cmd+click): cursor hint while a region is magnified */
+body.region-zoom #stage-wrap { cursor: zoom-out; }
 
 /* ---------- slide ---------- */
 .slide {
@@ -207,6 +211,7 @@ html, body {
   max-width: 100%;
   border: var(--border);
   box-shadow: var(--shadow);
+  cursor: zoom-in;
 }
 
 /* ---------- code ---------- */

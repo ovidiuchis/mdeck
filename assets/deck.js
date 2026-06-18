@@ -121,6 +121,13 @@
   let slides = [];     // the .slide elements
   let cur = 0;
   let hudTimer = null;
+  let zoomInstance = null;
+
+  /* region zoom (Ctrl/Cmd+click) state */
+  const REGION_ZOOM = 2.4;
+  let baseScale = 1;
+  let regionZoomed = false;
+  let zoomOX = DESIGN_W / 2, zoomOY = DESIGN_H / 2;
 
   /* ---------- errors ---------- */
   function showError(title, lines) {
@@ -133,13 +140,46 @@
 
   /* ---------- stage scaling ---------- */
   function fit() {
-    const s = Math.min(window.innerWidth / DESIGN_W, window.innerHeight / DESIGN_H) * 0.96;
-    stage.style.transform = "scale(" + s + ")";
+    baseScale = Math.min(window.innerWidth / DESIGN_W, window.innerHeight / DESIGN_H) * 0.96;
+    applyTransform();
+  }
+
+  /* Build the stage transform from the fit scale plus, when active, the
+     region-zoom: scale up and translate so the clicked point lands in the
+     middle of the viewport. transform-origin stays center center. */
+  function applyTransform() {
+    if (!regionZoomed) {
+      stage.style.transform = "scale(" + baseScale + ")";
+      return;
+    }
+    const s = baseScale * REGION_ZOOM;
+    const tx = -s * (zoomOX - DESIGN_W / 2);
+    const ty = -s * (zoomOY - DESIGN_H / 2);
+    stage.style.transform = "translate(" + tx + "px," + ty + "px) scale(" + s + ")";
+  }
+
+  /* zoom into the point under the click (stage-local coords from the
+     transformed bounding box) */
+  function zoomToPoint(e) {
+    const rect = stage.getBoundingClientRect();
+    zoomOX = ((e.clientX - rect.left) / rect.width) * DESIGN_W;
+    zoomOY = ((e.clientY - rect.top) / rect.height) * DESIGN_H;
+    regionZoomed = true;
+    document.body.classList.add("region-zoom");
+    applyTransform();
+  }
+
+  function exitRegionZoom() {
+    if (!regionZoomed) return;
+    regionZoomed = false;
+    document.body.classList.remove("region-zoom");
+    applyTransform();
   }
 
   /* ---------- navigation ---------- */
   function show(i, instant) {
     if (!slides.length) return;
+    exitRegionZoom();
     cur = Math.max(0, Math.min(i, slides.length - 1));
     slides.forEach((el, j) => el.classList.toggle("current", j === cur));
     progress.style.width = ((cur + 1) / slides.length) * 100 + "%";
@@ -201,9 +241,14 @@
   }
 
   /* ---------- dark / light theme ---------- */
+  function pageBackground() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--bg").trim() || "#f5f2e9";
+  }
+
   function toggleTheme() {
     const dark = document.documentElement.classList.toggle("dark");
     try { localStorage.setItem("mdeck-theme", dark ? "dark" : "light"); } catch (e) {}
+    if (zoomInstance) zoomInstance.update({ background: pageBackground() });
   }
 
   /* ---------- PDF export (native Print to PDF) ----------
@@ -280,6 +325,18 @@
     }
   }
 
+  /* Click-to-zoom on inline images (medium-zoom), loaded only when needed. */
+  async function setupImageZoom() {
+    if (!stage.querySelector(".slide img")) return;
+    try {
+      await loadScript(VENDOR + "medium-zoom.min.js");
+      zoomInstance = window.mediumZoom(".slide img", {
+        margin: 32,
+        background: pageBackground(),
+      });
+    } catch (e) { /* no zoom if the library is missing */ }
+  }
+
   /* ---------- loading ---------- */
   async function load() {
     const id = new URLSearchParams(location.search).get("p");
@@ -343,8 +400,8 @@
       slides.push(el);
     });
 
-    // mermaid + KaTeX, loaded only if some slide actually uses them
-    enhanceDone = enhance();
+    // mermaid, KaTeX, image zoom — loaded only when a slide needs them
+    enhanceDone = Promise.all([enhance(), setupImageZoom()]);
 
     // author signature (if configured) — only on the title and final slides
     if (CFG.author && slides.length) {
@@ -425,7 +482,7 @@
         case "d": case "D": toggleTheme(); break;
         case "g": case "G": case "o": case "O": toggleOverview(); break;
         case "p": case "P": e.preventDefault(); printDeck(); break;
-        case "Escape": closeOverview(); break;
+        case "Escape": exitRegionZoom(); closeOverview(); break;
       }
     });
 
@@ -441,7 +498,11 @@
 
     /* click on stage = forward */
     document.getElementById("stage-wrap").addEventListener("click", (e) => {
-      if (e.target.closest("a, button, pre, code, table")) return;
+      // Ctrl/Cmd+click toggles region zoom on the clicked spot
+      if (e.ctrlKey || e.metaKey) { e.preventDefault(); regionZoomed ? exitRegionZoom() : zoomToPoint(e); return; }
+      // while zoomed, a plain click just zooms back out
+      if (regionZoomed) { exitRegionZoom(); return; }
+      if (e.target.closest("a, button, pre, code, table, img")) return;
       if (window.getSelection().toString()) return;
       next();
     });

@@ -6,10 +6,10 @@ Zero-build, 100% static presentation engine (HTML + CSS + JavaScript). Each pres
 - 🚀 **No build step, no dependencies to install** — markdown-it and highlight.js are vendored locally, so it works fully offline / on intranets, no CDN required
 - 🗂️ **Library home page with collections** — group decks by topic, course, or team
 - 🎨 **Opinionated, polished look — and fully themeable** — override colors & fonts per deck from `presentation.json` (see [Theming](#theming-colors--fonts)); accent colors, dark mode, layout containers (grids, cards, stats)
-- 🖥️ **Presenter-friendly** — keyboard navigation, overview grid, fullscreen, touch swipe, deep links to any slide, print-to-PDF export
+- 🖥️ **Presenter-friendly** — keyboard navigation, overview grid, fullscreen, touch swipe, click-to-zoom on images, deep links to any slide, print-to-PDF export
 - 🔌 **Embeddable engine** — keep your content in a separate (even private) repo and load the engine from a CDN
 
-This repo contains the **engine** only: the viewer, the home page, the styles, and a `demo/` presentation as an example. Real content lives in separate repos that consume the engine — see [Embedding](#embedding-using-the-engine-from-another-repo).
+This repo ships the **engine** plus **bundled demos**: a feature tour (`demo/`) and two sample decks that show themed, real-world content. For your own material, keep a separate content repo and load the engine from a CDN — see [Embedding](#embedding-using-the-engine-from-another-repo).
 
 Markdown is rendered with [markdown-it](https://github.com/markdown-it/markdown-it) (CommonMark + GFM tables + linkify) and code is highlighted with [highlight.js](https://highlightjs.org/) — both **vendored locally** in `assets/vendor/`. `assets/md.js` is just a thin adapter that adds per-slide frontmatter and `:::` containers.
 
@@ -26,10 +26,12 @@ mdeck/
 │   ├── home.js                 # home page module (loaded by mdeck.js)
 │   ├── deck.js                 # viewer module (loaded by mdeck.js)
 │   ├── md.js                   # Markdown adapter (frontmatter, containers, icons, math)
-│   └── vendor/                 # markdown-it, highlight.js, mermaid, katex (local)
+│   └── vendor/                 # markdown-it, highlight.js, mermaid, katex, medium-zoom (local)
 ├── presentations/
 │   ├── index.json              # list / collections of presentations
-│   └── demo/                   # example — delete or replace it
+│   ├── demo/                   # feature tour — layouts, syntax, diagrams, math
+│   ├── olive-oil/              # sample deck (custom theme)
+│   └── dev-to-farmer/          # sample deck (custom theme)
 └── .claude/skills/mdeck-deck/  # Claude Code skill for authoring decks (see below)
 ```
 
@@ -383,7 +385,8 @@ Math is rendered with [KaTeX](https://katex.org/); `$…$` is inline, `$$…$$` 
 
 | Key / gesture | Action |
 |---------------|--------|
-| `→` `↓` `Space` `PgDn` / click | next slide |
+| `→` `↓` `Space` `PgDn` / click (empty area) | next slide |
+| click on an image | zoom in (Esc or click again to close) |
 | `←` `↑` `PgUp` | previous slide |
 | `Home` / `End` | first / last slide |
 | `F` | fullscreen |
@@ -391,7 +394,7 @@ Math is rendered with [KaTeX](https://katex.org/); `$…$` is inline, `$$…$$` 
 | `D` | toggle dark / light theme (remembered in the browser) |
 | `G` or `O` | overview (grid with all slides) |
 | `P` | export to PDF (opens the browser print dialog) |
-| `Esc` | close the overview |
+| `Esc` | close the overview or image zoom |
 | swipe left/right | touch navigation |
 
 Every slide has its own URL (`deck.html?p=demo#3`) — you can link directly to a slide.

@@ -1,13 +1,13 @@
 {
   "collections": [
     {
-      "title": "Product tour",
-      "description": "What MDECK can do: syntax, layouts and containers.",
+      "title": "Feature tour",
+      "description": "Every layout, container and syntax MDECK supports — start here.",
       "presentations": ["demo"]
     },
     {
-      "title": "Life advice for free",
-      "description": "Sample decks showing what real content looks like.",
+      "title": "Example decks",
+      "description": "Sample presentations showing how real content looks with custom themes.",
       "presentations": ["olive-oil", "dev-to-farmer"]
     }
   ]
