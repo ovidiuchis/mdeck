@@ -8,6 +8,7 @@
     {
       "title": "Example decks",
       "description": "Sample presentations showing how real content looks with custom themes.",
+      "collapsed": true,
       "presentations": ["olive-oil", "dev-to-farmer"]
     }
   ]

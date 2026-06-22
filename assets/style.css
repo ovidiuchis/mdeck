@@ -288,6 +288,32 @@ header.site {
 
 .collection + .collection { margin-top: 64px; }
 
+/* collapsible collection header */
+.collection-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+.collection-summary::-webkit-details-marker { display: none; }
+.collection-summary .collection-title { flex: 1; }
+
+.collection-chevron {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--text-soft);
+  border-bottom: 2px solid var(--text-soft);
+  transform: rotate(-45deg);
+  transition: transform 0.2s ease, border-color 0.15s ease;
+}
+.collection[open] > .collection-summary .collection-chevron {
+  transform: rotate(45deg);
+}
+.collection-summary:hover .collection-chevron { border-color: var(--accent); }
+
 .collection-title {
   display: flex;
   align-items: center;

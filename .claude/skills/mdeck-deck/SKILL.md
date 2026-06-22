@@ -171,7 +171,7 @@ Flat list, or grouped into collections:
 }
 ```
 
-Order of collections and ids is the display order. A plain `{ "presentations": [...] }` (no collections) renders one ungrouped grid. Decks left out of both lists won't appear on the home page (but are still reachable by URL).
+Order of collections and ids is the display order. A plain `{ "presentations": [...] }` (no collections) renders one ungrouped grid. Decks left out of both lists won't appear on the home page (but are still reachable by URL). A collection may set `"collapsed": true` to render folded by default (collapsible header; the visitor's toggle is remembered in `localStorage`).
 
 ## Conventions and tips
 

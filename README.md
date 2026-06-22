@@ -166,6 +166,7 @@ Presentations can be grouped on the home page into **collections** (e.g. "Intern
 ```
 
 - `title` — the collection name, shown as a section header; `description` is optional.
+- Collections are collapsible — click the header to fold a section away. Add `"collapsed": true` to start it folded; the visitor's choice is then remembered in the browser (`localStorage`).
 - The order of collections and of the presentations inside them is the display order.
 - The old format still works: a plain `{ "presentations": ["demo"] }` renders all cards in a single grid, without headers. The two can be combined — presentations in the flat `presentations` list are shown at the end, without a collection title.
 

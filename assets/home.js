@@ -166,22 +166,53 @@
       root.classList.add("collections");
     }
 
+    /* per-collection collapsed state, persisted like the theme choice. Keyed by a
+       slug of the title; falls back to the deck's `collapsed` flag in index.json. */
+    function slugify(s) {
+      return String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    }
+    function savedState(key) {
+      try { return localStorage.getItem("mdeck-col-" + key); } catch (e) { return null; }
+    }
+    function saveState(key, open) {
+      try { localStorage.setItem("mdeck-col-" + key, open ? "open" : "closed"); } catch (e) {}
+    }
+
     for (const col of collections) {
       const items = (col.presentations || []).filter((id) => metas[id]);
       if (!items.length) continue;
 
       let grid = root;
       if (grouped) {
-        const sec = document.createElement("section");
+        /* titled collections are collapsible <details>; a title-less legacy group
+           stays a plain <section> so it can't be folded away */
+        const sec = document.createElement(col.title ? "details" : "section");
         sec.className = "collection";
-        const countLabel =
-          items.length === 1 ? STR.collectionCountOne : STR.collectionCount.replace("{n}", items.length);
-        sec.innerHTML =
-          (col.title
-            ? '<h2 class="collection-title">' + col.title +
-              '<span class="collection-count">' + countLabel + "</span></h2>"
-            : "") +
-          (col.description ? '<p class="collection-desc">' + col.description + "</p>" : "");
+
+        if (col.title) {
+          const key = slugify(col.title);
+          const saved = savedState(key);
+          sec.open = saved ? saved === "open" : col.collapsed !== true;
+          sec.addEventListener("toggle", () => saveState(key, sec.open));
+
+          const countLabel =
+            items.length === 1 ? STR.collectionCountOne : STR.collectionCount.replace("{n}", items.length);
+          const summary = document.createElement("summary");
+          summary.className = "collection-summary";
+          summary.innerHTML =
+            '<span class="collection-chevron" aria-hidden="true"></span>' +
+            '<h2 class="collection-title">' + col.title +
+            '<span class="collection-count">' + countLabel + "</span></h2>";
+          sec.appendChild(summary);
+        }
+
+        if (col.description) {
+          const desc = document.createElement("p");
+          desc.className = "collection-desc";
+          desc.innerHTML = col.description;
+          sec.appendChild(desc);
+        }
+
         grid = document.createElement("div");
         grid.className = "decks";
         sec.appendChild(grid);
