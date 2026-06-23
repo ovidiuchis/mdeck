@@ -204,6 +204,7 @@
     progress.style.width = ((cur + 1) / slides.length) * 100 + "%";
     counter.innerHTML = "<b>" + (cur + 1) + "</b> / " + slides.length;
     if (!instant) history.replaceState(null, "", "#" + (cur + 1));
+    pokeHud();
   }
 
   const next = () => show(cur + 1);
@@ -489,7 +490,7 @@
     if (btnClose) btnClose.href = CFG.home;
 
     window.addEventListener("resize", fit);
-    window.addEventListener("mousemove", pokeHud);
+    window.addEventListener("mousemove", () => pokeHud());
 
     /* keyboard */
     window.addEventListener("keydown", (e) => {
